@@ -1,0 +1,13 @@
+**/*/.DS_Store
+*.log
+*.pid
+*.pyc
+*.sqlite
+*.sqlite3
+.idea
+__pycache__
+celerybeat-schedule
+celerybeat.pid
+collectedstatic/
+local.py
+media/
