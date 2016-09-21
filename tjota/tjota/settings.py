@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'adjax',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +51,14 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+MIDDLEWARE_CLASSES = [
+    'adjax.middleware.CsrfEnforceMiddleware',
+    'adjax.middleware.DispatchErrorMiddleware',
+]
+
+ADJAX_VARIABLE = 'TJOTA'
+ADJAX_DATA = {}
 
 ROOT_URLCONF = 'tjota.urls'
 

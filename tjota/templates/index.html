@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load adjax %}
 
 <!DOCTYPE HTML>
 <html>
@@ -12,8 +13,12 @@
     <h1>Welcome!</h1>
     <a href="{% url 'urlnameforother' %}">Go to other</a>
 
+    {% adjax_scripts %}
+
     <script src="{% static 'angular.min.js' %}"></script>
     <script src="{% static 'angular-cookies.min.js' %}"></script>
     <script src="{% static 'angular-route.min.js' %}"></script>
+
+    <script src="{% static 'app.js' %}"></script>
   </body>
 </html>
