@@ -2,7 +2,7 @@
 {% load adjax %}
 
 <!DOCTYPE HTML>
-<html>
+<html ng-app="app">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>Tjöta</title>
@@ -14,6 +14,22 @@
     <a href="{% url 'urlnameforother' %}">Go to other</a>
 
     {% adjax_scripts %}
+
+    {% verbatim %}
+      <div ng-controller="main">
+
+        <!-- Angular HTML goes here -->
+
+        <input type="text" ng-model="credentials.username"/>
+        <input type="password" ng-model="credentials.password"/>
+
+        <button ng-click="login()">Login</button>
+
+        <span ng-if="success">Logged in successfully.</span>
+        <span ng-if="!success">Invalid credentials.</span>
+        
+      </div>
+    {% endverbatim %}
 
     <script src="{% static 'angular.min.js' %}"></script>
     <script src="{% static 'angular-cookies.min.js' %}"></script>
