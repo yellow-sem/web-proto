@@ -15,8 +15,8 @@
         // Client-side functionality go here
 
         $scope.credentials = {
-            username: null,
-            password: null,
+            username: 'test',
+            password: 'test',
         };
 
         $scope.login = function () {

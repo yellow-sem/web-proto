@@ -12,6 +12,8 @@
   <body>
     <h1>Welcome!</h1>
     <a href="{% url 'urlnameforother' %}">Go to other</a>
+      
+    {% csrf_token %}
 
     {% adjax_scripts %}
 
