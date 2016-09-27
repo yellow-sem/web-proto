@@ -29,7 +29,23 @@
                     $scope.$apply();
                 }
             );
+        };
 
+        remote.apps.chat.get_messages(function (messages) {
+            $scope.messages = messages;
+
+            $scope.$apply();
+        });
+
+        $scope.doSomething = function () {
+            alert('something');
+        };
+
+        $scope.addMessage = function () {
+            $scope.messages.push({
+                time: '22:22',
+                content: 'hello3',
+            });
         };
 
     });

@@ -26,9 +26,20 @@
         <input type="password" ng-model="credentials.password"/>
 
         <button ng-click="login()">Login</button>
+        <button ng-click="doSomething()">Do something</button>
+
+        <span ng-if="success">Welcome {{ credentials.username }}!</span>
 
         <span ng-if="success">Logged in successfully.</span>
         <span ng-if="!success">Invalid credentials.</span>
+
+        <ul>
+          <li ng-repeat="message in messages">
+            {{ message.time }} {{ message.content }}
+          </li>
+        </ul>
+
+        <button ng-click="addMessage()">Add message</button>
         
       </div>
     {% endverbatim %}

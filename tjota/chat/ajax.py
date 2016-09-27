@@ -10,3 +10,17 @@ def login(request, username, password):
 @registry.register
 def hello2(request, num1, num2):
     return num1 * num2
+
+
+@registry.register
+def get_messages(request):
+    msg1 = {
+        'time': '22:20',
+        'content': 'Hello',
+    }
+    msg2 = {
+        'time': '22:21',
+        'content': 'hello2',
+    }
+
+    return [msg1, msg2]
