@@ -1,0 +1,7 @@
+Django==1.10
+django-adjax==0.8
+flake8==3.0.4
+mccabe==0.5.2
+pycodestyle==2.0.0
+pyflakes==1.2.3
+six==1.10.0
