@@ -1,7 +1,14 @@
 Django==1.10
 django-adjax==0.8
+django-appconf==1.0.2
+django-compress==1.0.1
+django-compressor==2.1
+django-libsass==0.7
 flake8==3.0.4
+libsass==0.11.1
 mccabe==0.5.2
 pycodestyle==2.0.0
 pyflakes==1.2.3
+rcssmin==1.0.6
+rjsmin==1.0.12
 six==1.10.0

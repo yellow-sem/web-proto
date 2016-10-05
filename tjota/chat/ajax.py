@@ -1,26 +1,27 @@
 from adjax.registry import registry
 
-# Server-side functions go here
 
 @registry.register
 def login(request, username, password):
-    return username == 'test' and password == 'test'
+    return {
+        'success': True,
+        'token': '1234',
+        'user': {
+            'name': 'Joe',
+            'status': 'My status',
+        },
+    }
 
 
 @registry.register
-def hello2(request, num1, num2):
-    return num1 * num2
+def logout(request, token):
+    return {
+        'success': True,
+    }
 
 
 @registry.register
-def get_messages(request):
-    msg1 = {
-        'time': '22:20',
-        'content': 'Hello',
+def status(request, token, status):
+    return {
+        'success': True,
     }
-    msg2 = {
-        'time': '22:21',
-        'content': 'hello2',
-    }
-
-    return [msg1, msg2]

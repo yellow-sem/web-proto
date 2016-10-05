@@ -12,41 +12,70 @@
 
     app.controller('main', function ($scope, apps) {
 
-        // Client-side functionality go here
+        $scope.user = null;
+        $scope.token = null;
 
-        $scope.credentials = {
-            username: 'test',
-            password: 'test',
+        $scope.logout = {
+            submit: function () {
+                $scope.user = null;
+                $scope.token = null;
+            },
         };
 
-        $scope.login = function () {
-            remote.apps.chat.login(
-                $scope.credentials.username,
-                $scope.credentials.password,
-                function (success) {
-                    $scope.success = success;
+        $scope.login = {
+            visible: false,
+            show: function () {
+                $scope.login.visible = true;
+                $scope.login.reset();
+            },
+            hide: function () {
+                $scope.login.visible = false;
+                $scope.login.reset();
+            },
+            data: {
+                username: null,
+                password: null,
+                consent: false,
+            },
+            reset: function () {
+                $scope.login.data.username = null;
+                $scope.login.data.password = null;
+            },
+            submit: function (data) {
+                apps.chat.login(
+                    data.username,
+                    data.password,
+                    function (data) {
+                        if (data.success) {
+                            $scope.user = data.user;
+                            $scope.token = data.token;
 
-                    $scope.$apply();
-                }
-            );
+                            $scope.login.hide();
+                        } else {
+                            $scope.user = null;
+                            $scope.token = null;
+                        }
+
+                        $scope.$apply();
+                    });
+            },
         };
 
-        remote.apps.chat.get_messages(function (messages) {
-            $scope.messages = messages;
-
-            $scope.$apply();
-        });
-
-        $scope.doSomething = function () {
-            alert('something');
+        $scope.status = {
+            editable: false,
+            edit: function () {
+                $scope.status.editable = true;
+            },
+            save: function () {
+                apps.chat.status(
+                    $scope.token, $scope.user.status,
+                    function (data) {
+                        $scope.status.editable = !data.success;
+                        $scope.$apply();
+                    });
+            },
         };
 
-        $scope.addMessage = function () {
-            $scope.messages.push({
-                time: '22:22',
-                content: 'hello3',
-            });
-        };
 
     });
 
