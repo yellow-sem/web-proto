@@ -8,8 +8,10 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>Tjöta</title>
 
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
     {% compress css %}
-      <link rel="stylesheet" type="text/x-scss" href="{% static 'styles.scss' %}">
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'styles.scss' %}">
     {% endcompress %}
   </head>
 
@@ -21,18 +23,16 @@
     {% verbatim %}
       <div ng-controller="main">
         <div class="nav">
-          <div ng-if="user">
-            <span>Welcome, {{ user.name }}</span>
-            <button ng-click="logout.submit()">Logout</button>
-          </div>
-          <div ng-if="!user">
-            <button ng-click="login.show()">Login</button>
-          </div>
+            <img src="https://tjota.online/static/tjota.png" alt="Tjöta">
+            <img src="https://tjota.online/static/yellow.png" alt="Yellow">
+            <button ng-if="!user" ng-click="login.show()" class="glossyglossy">Log in</button>
+            <button ng-if="user" ng-click="logout.submit()" class="glossyglossy">Logout</button>
         </div>
 
         <div ng-if="user" class="status">
+            <span class="welcome">Welcome, {{ user.name }}</span>
           <form>
-            <span ng-hide="status.editable">{{ user.status }}</span>
+            <span ng-hide="status.editable">Your current status is: {{ user.status }}</span>
             <button ng-hide="status.editable" ng-click="status.edit()">Edit</button>
 
             <input ng-show="status.editable" type="text" ng-model="user.status"/>
@@ -42,7 +42,7 @@
 
         <div class="login" ng-show="login.visible">
           <div class="caption">
-            <button ng-click="login.close()">&times;</button>
+            <button ng-click="login.hide()">&times;</button>
           </div>
 
           <form ng-submit="login.submit(login.data)">

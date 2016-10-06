@@ -7,8 +7,8 @@ def login(request, username, password):
         'success': True,
         'token': '1234',
         'user': {
-            'name': 'Joe',
-            'status': 'My status',
+            'name': username,
+            'status': 'I\'m so excited!',
         },
     }
 

@@ -1,10 +1,44 @@
-
 * {
     &, &::after, &::before {
                 box-sizing: border-box;
         -webkit-box-sizing: border-box;
            -moz-box-sizing: border-box;
              -o-box-sizing: border-box;
+    }
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.glossyglossy {
+    background: #E1AE3A;
+    background-image: linear-gradient(#E1CE9E ,#E1AE3A);
+    text-decoration: none;
+    color: #fff;
+    display: inline-block;
+    font-family: 'Open Sans';
+    font-weight: 100;
+    border: none;
+    color: white;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    font-size: 15px;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+.status {
+    text-align: center;
+    font-family: 'Open Sans';
+    padding: 20px;
+    
+    > .welcome {
+        font-size: 25px;
+        font-weight: bold;
     }
 }
 
