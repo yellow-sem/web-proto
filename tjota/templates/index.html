@@ -20,27 +20,56 @@
     {% csrf_token %}
 
     {% adjax_scripts %}
+    <!-- 
+    The main controller is used throughtout right now, might need to be split at some point into smaller
+    and more manageable sections (files).
+    -->
     <div ng-controller="main">
         <div class="header">
+            <!-- 
+            Static images are referenced from the directory at tjota/static/..., the directory is defined in
+            settings.py, line > 100.
+            -->
             <img src="{% static 'tjota.png' %}" alt="Tjöta"/>
             <img src="{% static 'yellow.png' %}" alt="Yellow"/>
             <button ng-if="!user" ng-click="login.show()" class="glossyglossy">Log in</button>
             <button ng-if="user" ng-click="logout.submit()" class="glossyglossy">Logout</button>
         </div>
         
-        <div ng-if="user" class="userview">
-            <span class="welcome">Welcome, [[ user.name ]]</span>
-            <form>
-                <span ng-hide="status.editable">Your current status is: [[ user.status ]]</span>
-                <button ng-hide="status.editable" ng-click="status.edit()">Edit</button>
-
-                <input ng-show="status.editable" type="text" ng-model="user.status"/>
-                <button ng-show="status.editable" ng-click="status.save()">Save</button>
-            </form>
-            <button ng-click="chat.getChatRooms()">Get chatrooms</button>
+        <!-- Here starts the login box. -->
+        <div class="login" ng-show="login.visible">
+          <div class="caption">
+            <button ng-click="login.hide()">&times;</button>
+          </div>
+        <!-- The ng-submit takes the data gathered in the form and submits it with a call to the login funcion. -->
+          <form ng-submit="login.submit(login.data)">
+            <input type="text" ng-model="login.data.username" placeholder="Username"/>
+            <input type="password" ng-model="login.data.password" placeholder="Password"/>
+            <label>
+              <input type="checkbox" ng-model="login.consent"/>
+              I accept the <a href="#">Terms and Conditions</a>
+            </label>
+          <!-- Button will remain disabled until consent is given. -->
+            <button ng-disabled="!login.consent">Login</button>
+          </form>
+        </div>
         
-            <div class="chats">
-                <input ng-show="chat.visible" type="text" ng-model="chat.data.newChat"/>a
+        <!-- Here starts the user's view once logged in. -->
+        <section class="userview">
+            <!-- Allocated class for user's header content. -->
+            <div class="userheader">
+                <span class="welcome">Welcome, [[ user.name ]]</span>
+                <form class="status">
+                    <span ng-hide="status.editable">Your current status is: [[ user.status ]]</span>
+                    <button ng-hide="status.editable" ng-click="status.edit()">Edit</button>
+
+                    <input ng-show="status.editable" type="text" ng-model="user.status"/>
+                    <button ng-show="status.editable" ng-click="status.save()">Save</button>
+                </form>
+            </div>
+            <div class="chatrooms">
+                <button ng-click="chat.getChatRooms()">Get chatrooms</button>
+                <input ng-show="chat.visible" type="text" ng-model="chat.data.newChat"/>
                 <button ng-show="chat.visible" ng-click="chat.addChat()">Save chat</button>
 
                 <button ng-hide="chat.visible" ng-click="chat.show()">Add chat</button>
@@ -50,23 +79,11 @@
                     </li>
                 </ul>
             </div>
-        </div>
-
-        <div class="login" ng-show="login.visible">
-          <div class="caption">
-            <button ng-click="login.hide()">&times;</button>
-          </div>
-
-          <form ng-submit="login.submit(login.data)">
-            <input type="text" ng-model="login.data.username" placeholder="Username"/>
-            <input type="password" ng-model="login.data.password" placeholder="Password"/>
-            <label>
-              <input type="checkbox" ng-model="login.consent"/>
-              I accept the <a href="#">Terms and Conditions</a>
-            </label>
-            <button ng-disabled="!login.consent">Login</button>
-          </form>
-        </div>
+            <div class="chatview">
+                This is where messages will go.
+            </div>
+        </section>
+        
     </div>
     <script src="{% static 'angular.min.js' %}"></script>
     <script src="{% static 'angular-cookies.min.js' %}"></script>

@@ -74,7 +74,6 @@
         
         $scope.chat = {
             visible: false,
-            mode: false,
             data: {
                 chatrooms: [],
                 newChat: null
@@ -83,7 +82,9 @@
                 apps.chat.getchatrooms(
                     $scope.user,
                     function (data) {
-                        $scope.chat.data.chatrooms = data;
+                        if (data.success) {
+                            $scope.chat.data.chatrooms = data.chatrooms;
+                        }
                         $scope.$apply();
                     }
                 );
@@ -94,22 +95,36 @@
                     $scope.chat.data.newChat,
                     function (data) {
                         if (data.success) {
-                            $scope.chat.data.chatrooms.push(data.room);
-                            $scope.chat.reset();
+                            $scope.chat.data.chatrooms.push(data.chatroom);
+                            $scope.chat.hide();
                         }
                         $scope.$apply();
                     }
                 );
             },
+//            removeChat: function () {
+//                apps.chat.removeChat(
+//                    $scope.user,
+//                    $scope.chat.data.newChat,
+//                    $scope.chat.data.chatrooms,
+//                    function (data) {
+//                        if (data.success) {
+//                            $scope.chat.data.chatrooms = data.rooms;
+//                        }
+//                        $scope.$apply();
+//                    }
+//                );
+//            },
             show: function () {
                 $scope.chat.visible = true;
+                $scope.chat.reset();
             },
             hide: function () {
                 $scope.chat.visible = false;
+                $scope.chat.reset();
             },
             reset: function () {
                 $scope.chat.data.newChat = null;
-                $scope.chat.hide();
             },
         };
 

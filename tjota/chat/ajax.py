@@ -26,17 +26,20 @@ def status(request, token, status):
 
 @registry.register
 def getchatrooms(request, user):
-    return [
-        "All", "Group", "Public", "Private"
-    ]
-
-@registry.register
-def addchat(request, user, room):
     return {
         'success': True,
-        'room': room,
+        'chatrooms': ["All", "Group", "Public", "Private"],
     }
 
 @registry.register
-def removechat(request, user, room):
-    return True
+def addchat(request, user, chatroom):
+    return {
+        'success': True,
+        'chatroom': chatroom,
+    }
+
+@registry.register
+def removechat(request, user, chatroom, chatrooms):
+    return {
+    	'success': True,
+    }

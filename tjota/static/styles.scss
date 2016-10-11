@@ -13,6 +13,7 @@
     justify-content: center;
 }
 
+/* NEW FROM LOREAL */
 .glossyglossy {
     background: #E1AE3A;
     background-image: linear-gradient(#E1CE9E ,#E1AE3A);
@@ -31,16 +32,39 @@
     font-weight: bold;
 }
 
-.userview {
-    text-align: center;
+/* The users header should consist of a welcoming message and an option to set the user's status. */
+.userheader {
+    width: 100%;
     font-family: 'Open Sans';
     padding: 20px;
-    
+        
     > .welcome {
         font-size: 25px;
         font-weight: bold;
     }
+    > .status {
+        font-size: 18px;
+    }
 }
+
+/* The userview consists of the field of available chats and the chat area itself */
+.userview {
+    width: 100%;
+    
+    > .chatrooms {
+        width: 25%;
+        float: left;
+        border: orange dotted 1px;
+    }
+    
+    > .chatview {
+        width: 75%;
+        float: left;
+        border: green dotted 1px;
+    }
+}
+
+
 
 .login {
     position: fixed;
