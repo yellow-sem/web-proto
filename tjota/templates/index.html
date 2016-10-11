@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %}
 {% load compress %}
 {% load adjax %}
 
@@ -8,10 +8,11 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>Tjöta</title>
 
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+    
     {% compress css %}
-        <link rel="stylesheet" type="text/x-scss" href="{% static 'styles.scss' %}">
+      <link rel="stylesheet" type="text/x-scss" href="{% static 'styles.scss' %}">
     {% endcompress %}
   </head>
 
@@ -19,25 +20,36 @@
     {% csrf_token %}
 
     {% adjax_scripts %}
-
-    {% verbatim %}
-      <div ng-controller="main">
-        <div class="nav">
-            <img src="https://tjota.online/static/tjota.png" alt="Tjöta">
-            <img src="https://tjota.online/static/yellow.png" alt="Yellow">
+    <div ng-controller="main">
+        <div class="header">
+            <img src="{% static 'tjota.png' %}" alt="Tjöta"/>
+            <img src="{% static 'yellow.png' %}" alt="Yellow"/>
             <button ng-if="!user" ng-click="login.show()" class="glossyglossy">Log in</button>
             <button ng-if="user" ng-click="logout.submit()" class="glossyglossy">Logout</button>
         </div>
+        
+        <div ng-if="user" class="userview">
+            <span class="welcome">Welcome, [[ user.name ]]</span>
+            <form>
+                <span ng-hide="status.editable">Your current status is: [[ user.status ]]</span>
+                <button ng-hide="status.editable" ng-click="status.edit()">Edit</button>
 
-        <div ng-if="user" class="status">
-            <span class="welcome">Welcome, {{ user.name }}</span>
-          <form>
-            <span ng-hide="status.editable">Your current status is: {{ user.status }}</span>
-            <button ng-hide="status.editable" ng-click="status.edit()">Edit</button>
+                <input ng-show="status.editable" type="text" ng-model="user.status"/>
+                <button ng-show="status.editable" ng-click="status.save()">Save</button>
+            </form>
+            <button ng-click="chat.getChatRooms()">Get chatrooms</button>
+        
+            <div class="chats">
+                <input ng-show="chat.visible" type="text" ng-model="chat.data.newChat"/>a
+                <button ng-show="chat.visible" ng-click="chat.addChat()">Save chat</button>
 
-            <input ng-show="status.editable" type="text" ng-model="user.status"/>
-            <button ng-show="status.editable" ng-click="status.save()">Save</button>
-          </form>
+                <button ng-hide="chat.visible" ng-click="chat.show()">Add chat</button>
+                <ul>
+                    <li ng-repeat="room in chat.data.chatrooms">
+                        [[ room ]]
+                    </li>
+                </ul>
+            </div>
         </div>
 
         <div class="login" ng-show="login.visible">
@@ -55,10 +67,7 @@
             <button ng-disabled="!login.consent">Login</button>
           </form>
         </div>
-
-      </div>
-    {% endverbatim %}
-
+    </div>
     <script src="{% static 'angular.min.js' %}"></script>
     <script src="{% static 'angular-cookies.min.js' %}"></script>
     <script src="{% static 'angular-route.min.js' %}"></script>
