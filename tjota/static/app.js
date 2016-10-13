@@ -90,17 +90,19 @@
                 );
             },
             addChat: function () {
-                apps.chat.addchat(
-                    $scope.user,
-                    $scope.chat.data.newChat,
-                    function (data) {
-                        if (data.success) {
-                            $scope.chat.data.chatrooms.push(data.chatroom);
-                            $scope.chat.hide();
+                if ($scope.chat.data.newChat != null) {
+                    apps.chat.addchat(
+                        $scope.user,
+                        $scope.chat.data.newChat,
+                        function (data) {
+                            if (data.success) {
+                                $scope.chat.data.chatrooms.push(data.chatroom);
+                                $scope.chat.hide();
+                            }
+                            $scope.$apply();
                         }
-                        $scope.$apply();
-                    }
-                );
+                    );
+                }
             },
             removeChat: function (chatroom) {
                 apps.chat.removechat(

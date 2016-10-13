@@ -32,8 +32,8 @@
             -->
             <img src="{% static 'tjota.png' %}" alt="Tjöta"/>
             <img src="{% static 'yellow.png' %}" alt="Yellow"/>
-            <button ng-if="!user" ng-click="login.show()" class="glossyglossy">Log in</button>
-            <button ng-if="user" ng-click="logout.submit()" class="glossyglossy">Logout</button>
+            <button ng-if="!user" ng-click="login.show()" class="btngul">Log in</button>
+            <button ng-if="user" ng-click="logout.submit()" class="btngul">Logout</button>
         </div>
         
         <!-- Here starts the login box. -->
@@ -69,16 +69,22 @@
                 </form>
             </div>
             <div class="chatrooms">
-                <button ng-click="chat.getChatRooms()">Get chatrooms</button>
-                <input ng-show="chat.insertChat" type="text" ng-model="chat.data.newChat"/>
-                <button ng-show="chat.insertChat" ng-click="chat.addChat()">Save chat</button>
-
-                <button ng-hide="chat.insertChat" ng-click="chat.show()">Add chat</button>
-                <ul class="chatlist">
-                    <li class="chatitem" ng-repeat="room in chat.data.chatrooms">
-                        [[ room ]]<button ng-click="chat.removeChat(room)">&times;</button>
-                    </li>
-                </ul>
+                <div class="chatops">
+                    <button ng-click="chat.getChatRooms()">Get chatrooms</button>
+                    <br>
+                    <input ng-show="chat.insertChat" type="text" ng-model="chat.data.newChat"/>
+                    <button ng-show="chat.insertChat" ng-click="chat.addChat()">Save chat</button>
+                    <button ng-show="chat.insertChat" ng-click="chat.hide()">Cancel</button>
+                    
+                    <button ng-hide="chat.insertChat" ng-click="chat.show()">Add chat</button>
+                </div>
+                <div class="chats">
+                    <ul class="chatlist">
+                        <li class="chatitem" ng-repeat="room in chat.data.chatrooms">
+                            [[ room ]]<button ng-click="chat.removeChat(room)">&times;</button>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div class="chatview">
                 This is where messages will go.

@@ -7,14 +7,19 @@
     }
 }
 
+html, body {
+    height: 100%;
+}
+
 .header {
+    border: 1px dotted red;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 /* NEW FROM LOREAL */
-.glossyglossy {
+.btngul {
     background: #E1AE3A;
     background-image: linear-gradient(#E1CE9E ,#E1AE3A);
     text-decoration: none;
@@ -34,56 +39,82 @@
 
 /* The users header should consist of a welcoming message and an option to set the user's status. */
 .userheader {
+    border: 1px dotted blue;
     width: 100%;
+    background: #182B3C;
     font-family: 'Open Sans';
     padding: 20px;
         
     > .welcome {
         font-size: 25px;
         font-weight: bold;
+        color: white;
     }
     > .status {
         font-size: 18px;
+        color: white;
     }
 }
 
 /* The userview consists of the field of available chats and the chat area itself */
 .userview {
     width: 100%;
+    font-family: 'Open Sans';
         
     > .chatrooms {
-        width: 25%;
+        width: 20%;
+        height: 500px;
+        background: #182B3C;
         float: left;
         border: orange dotted 1px;
         
-        > .chatlist {
-            list-style-type: none;
-            margin-right: 2em;
-            margin-left: -1em;
-            > .chatitem {
-                float: left;
-                width: 100%;
-                > button {
-                    float: right;
-                    background-color: transparent;
-                    color: transparent;
-                    border: transparent;
-                    border-radius: 50%;
-                    -webkit-transition-duration: 0.4s;
-                    transition-duration: 0.4s;
+        > .chatops {
+            text-align: center;
+        }
+        
+        > .chats {
+            
+            > .chatlist {
+                list-style-type: none;
+                margin-right: 2em;
+                margin-left: -1em;
+                
+                > .chatitem {
+                    float: left;
+                    width: 100%;
+                    height: 1,5em;
+                    padding: 2px;
+                    color: white;
+                    border-radius: 5px;
+                    
+                    > button {
+                        float: right;
+                        border-radius: 20%;
+                        font-weight: bold;
+                        background: transparent;
+                        color: transparent;
+                        border: transparent;
+                    }
                 }
-            }
-            > .chatitem:hover {
-                > button {
-                    color: black;
-                    border: 1px solid black;
+                
+                > .chatitem:hover {
+                    background: #31597B;
+                    
+                    > button {
+                        background: #262626;
+                        color:#f5f5f5;
+                        border: 2px solid #f5f5f5;
+                        //box-shadow: 0 0 3px gray;
+                    }
                 }
             }
         }
     }
     
     > .chatview {
-        width: 75%;
+        width: 80%;
+        height: 500px;
+        background: #E1AA11;
         float: left;
         border: green dotted 1px;
     }
@@ -97,8 +128,10 @@
     top: 100px;
     left: 50%;
     margin-left: -150px;
-    border: solid 1px gray;
+    font-family: 'Open Sans';
+    font-size: 11px;
     padding: 10px;
+    border: solid 1px gray;
 
     > .caption {
         text-align: right;
