@@ -50,11 +50,36 @@
 /* The userview consists of the field of available chats and the chat area itself */
 .userview {
     width: 100%;
-    
+        
     > .chatrooms {
         width: 25%;
         float: left;
         border: orange dotted 1px;
+        
+        > .chatlist {
+            list-style-type: none;
+            margin-right: 2em;
+            margin-left: -1em;
+            > .chatitem {
+                float: left;
+                width: 100%;
+                > button {
+                    float: right;
+                    background-color: transparent;
+                    color: transparent;
+                    border: transparent;
+                    border-radius: 50%;
+                    -webkit-transition-duration: 0.4s;
+                    transition-duration: 0.4s;
+                }
+            }
+            > .chatitem:hover {
+                > button {
+                    color: black;
+                    border: 1px solid black;
+                }
+            }
+        }
     }
     
     > .chatview {
