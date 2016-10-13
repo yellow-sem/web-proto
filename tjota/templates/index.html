@@ -55,7 +55,7 @@
         </div>
         
         <!-- Here starts the user's view once logged in. -->
-        <section class="userview">
+        <section ng-if="user" class="userview">
             <!-- Allocated class for user's header content. -->
             <div class="userheader">
                 <span class="welcome">Welcome, [[ user.name ]]</span>
@@ -69,10 +69,10 @@
             </div>
             <div class="chatrooms">
                 <button ng-click="chat.getChatRooms()">Get chatrooms</button>
-                <input ng-show="chat.visible" type="text" ng-model="chat.data.newChat"/>
-                <button ng-show="chat.visible" ng-click="chat.addChat()">Save chat</button>
+                <input ng-show="chat.insertChat" type="text" ng-model="chat.data.newChat"/>
+                <button ng-show="chat.insertChat" ng-click="chat.addChat()">Save chat</button>
 
-                <button ng-hide="chat.visible" ng-click="chat.show()">Add chat</button>
+                <button ng-hide="chat.insertChat" ng-click="chat.show()">Add chat</button>
                 <ul>
                     <li ng-repeat="room in chat.data.chatrooms">
                         [[ room ]] - <button ng-click="chat.removeChat(room)">Del</button>
@@ -80,9 +80,8 @@
                 </ul>
             </div>
             <div class="chatview">
-                This is where messages will go. [[ chat.test ]]
+                This is where messages will go.
             </div>
-            <span ng-model="chat.test"></span>
         </section>
         
     </div>

@@ -73,8 +73,7 @@
         };
         
         $scope.chat = {
-            visible: false,
-            test: null,
+            insertChat: false,
             data: {
                 chatrooms: [],
                 newChat: null
@@ -118,16 +117,13 @@
                         $scope.$apply();
                     }
                 );
-//                index = $scope.chat.data.chatrooms.indexOf(chatroom);
-//                delete $scope.chat.data.chatrooms[index];
-//                $scope.chat.test = chatroom;
             },
             show: function () {
-                $scope.chat.visible = true;
+                $scope.chat.insertChat = true;
                 $scope.chat.reset();
             },
             hide: function () {
-                $scope.chat.visible = false;
+                $scope.chat.insertChat = false;
                 $scope.chat.reset();
             },
             reset: function () {
