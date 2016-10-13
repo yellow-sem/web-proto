@@ -75,13 +75,14 @@
                 <button ng-hide="chat.visible" ng-click="chat.show()">Add chat</button>
                 <ul>
                     <li ng-repeat="room in chat.data.chatrooms">
-                        [[ room ]]
+                        [[ room ]] - <button ng-click="chat.removeChat(room)">Del</button>
                     </li>
                 </ul>
             </div>
             <div class="chatview">
-                This is where messages will go.
+                This is where messages will go. [[ chat.test ]]
             </div>
+            <span ng-model="chat.test"></span>
         </section>
         
     </div>

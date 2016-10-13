@@ -74,6 +74,7 @@
         
         $scope.chat = {
             visible: false,
+            test: null,
             data: {
                 chatrooms: [],
                 newChat: null
@@ -102,19 +103,25 @@
                     }
                 );
             },
-//            removeChat: function () {
-//                apps.chat.removeChat(
-//                    $scope.user,
-//                    $scope.chat.data.newChat,
-//                    $scope.chat.data.chatrooms,
-//                    function (data) {
-//                        if (data.success) {
-//                            $scope.chat.data.chatrooms = data.rooms;
-//                        }
-//                        $scope.$apply();
-//                    }
-//                );
-//            },
+            removeChat: function (chatroom) {
+                apps.chat.removechat(
+                    $scope.user,
+                    chatroom,
+                    function (data) {
+                        if (data.success) {
+                            index = $scope.chat.data.chatrooms.indexOf(chatroom);
+                            length = $scope.chat.data.chatrooms.length;
+                            first = $scope.chat.data.chatrooms.slice(0, index);
+                            second = $scope.chat.data.chatrooms.slice(index + 1, length);
+                            $scope.chat.data.chatrooms = first.concat(second);
+                        }
+                        $scope.$apply();
+                    }
+                );
+//                index = $scope.chat.data.chatrooms.indexOf(chatroom);
+//                delete $scope.chat.data.chatrooms[index];
+//                $scope.chat.test = chatroom;
+            },
             show: function () {
                 $scope.chat.visible = true;
                 $scope.chat.reset();

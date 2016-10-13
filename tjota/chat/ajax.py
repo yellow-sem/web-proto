@@ -39,7 +39,7 @@ def addchat(request, user, chatroom):
     }
 
 @registry.register
-def removechat(request, user, chatroom, chatrooms):
+def removechat(request, user, chatroom):
     return {
-    	'success': True,
+        'success': True,
     }
