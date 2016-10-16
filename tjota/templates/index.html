@@ -34,8 +34,6 @@
             <h1>by</h1>
             <img src="{% static 'yellow.png' %}" alt="Yellow"/>
             <h3>You've heard of GUL, but have you heard of YELLOW?</h3>
-            <button ng-if="!user" ng-click="login.show()" class="btngul">Log in</button>
-            <button ng-if="user" ng-click="logout.submit()" class="btngul">Logout</button>
         </div>
         
         <!-- Here starts the login box. -->
@@ -58,13 +56,19 @@
         
         <!-- Allocated class for user's header content. -->
         <div class="mainmenu">
-            <div ng-if="!user" class="menuitem">
+            <div ng-if="!user" ng-click="login.show()" class="menuitem">
                 Log in
             </div>
             <div ng-if="!user" class="dummy80">
             </div>
-            <div ng-if="user" class="menuitem">
+            <div ng-if="user" class="dropdown">
                 Account
+                <div class="dropdowncontent">
+                    <div class="dropdownitem">
+                        <button>Profile</button>
+                        <button ng-click="logout.submit()">Log out</button>
+                    </div>
+                </div>
             </div>
             <div ng-if="user" class="menuitem">
                 Chats

@@ -23,35 +23,51 @@ html, body {
     float: left;
     text-align: center;
     align-items: center;
+    justify-content: center;
     border: 1px dotted green;
     
-    > .openlogin {
+    > .menuitem {
         width: 20%;
+        height: 2em;
+        border: 1px red dotted;
+    }
+    
+    > .menuitem:hover {
+        background: #f1f1f1;
     }
     
     > .dummy80 {
         width: 80%;
     }
     
-    > .account {
+    > .dropdown {
         width: 20%;
+        height: 2em;
+        position: relative;
+        display: inline-block;
+        border: 1px red dotted;
+        
+        > .dropdowncontent {
+            width: 100%;
+            display: none;
+            position: absolute;
+            
+            > .dropdownitem {
+                
+                > button {
+                    width: 100%;
+                }
+            }    
+        }
     }
     
-    > .chats {
-        width: 20%;
-    }
-    
-    > .calendar {
-        width: 20%;
-    }
-    
-    > .grades {
-        width: 20%;
-    }
-    
-    > .settings {
-        width: 20%;
-    }
+    > .dropdown:hover {
+            background: #f1f1f1;    
+        
+            > .dropdowncontent {
+                display: block;
+            }
+        }
 }
 
 /* NEW FROM LOREAL */
