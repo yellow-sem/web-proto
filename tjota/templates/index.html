@@ -28,7 +28,7 @@
         <div class="header">
             <!-- 
             Static images are referenced from the directory at tjota/static/..., the directory is defined in
-            settings.py, line > 100.
+            settings.py, line > 100. Read more about how to reference images in the README.
             -->
             <img src="{% static 'tjota.png' %}" alt="Tjöta"/>
             <img src="{% static 'yellow.png' %}" alt="Yellow"/>
@@ -40,7 +40,7 @@
           <div class="caption">
             <button ng-click="login.hide()">&times;</button>
           </div>
-        <!-- The ng-submit takes the data gathered in the form and submits it with a call to the login funcion. -->
+            <!-- The ng-submit takes the data gathered in the form and submits it with a call to the login funcion. -->
           <form ng-submit="login.submit(login.data)">
             <input type="text" ng-model="login.data.username" placeholder="Username"/>
             <input type="password" ng-model="login.data.password" placeholder="Password"/>
@@ -48,12 +48,12 @@
               <input type="checkbox" ng-model="login.consent"/>
               I accept the <a href="#">Terms and Conditions</a>
             </label>
-          <!-- Button will remain disabled until consent is given. -->
+            <!-- Button will remain disabled until consent is given. -->
             <button ng-disabled="!login.consent">Login</button>
           </form>
         </div>
         
-        <!-- Allocated class for user's header content. -->
+        <!-- Main navigation menu, displayed at the top of the screen, just below the logo images. -->
         <div class="mainmenu">
             <div ng-if="!user" ng-click="login.show()" class="menuitem">
                 Log in
@@ -85,8 +85,10 @@
             </div>
         </div>
         
-        <!-- Here starts the user's view once logged in. -->
-        <!--<section ng-if="user" class="userview">-->
+        <!-- 
+        Here starts the user's view once logged in. The ng-if keeps this section hidden until the user variable
+        is changed from null -> and actual user
+        -->
         <div ng-if="user" class="userview">
             <div class="leftsidebar">
                 <h1>Welcome, [[ user.name ]]</h1>
@@ -120,16 +122,19 @@
                 <div class="chatmessages">
                     <ul class="chatmessage">
                         <li>
-                            22:10: Hey sexy :-)
+                            22:10: The moon is made out of cheese. :-)
                         </li>
                         <li>
-                            22:11: Uuuuh, hi?
+                            22:11: Uuuuh, and what scientific fact do you base that assumption on?
                         </li>
                         <li>
-                            22:12: Want to hear something exciting?
+                            22:12: WHAT ASSUMPTION?!!?
                         </li>
                         <li>
-                            22:12: Oh please don't...
+                            22:12: JUST BECAUSE WALLACE AND GROMIT IS ON THE TELLY DOES NOT MEAN ITS TRUE YOU NUTTER...
+                        </li>
+                        <li>
+                            22:20: You stupid
                         </li>
                     </ul>
                 </div>
