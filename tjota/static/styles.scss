@@ -8,14 +8,50 @@
 }
 
 html, body {
-    height: 100%;
+    font-family: 'Open Sans';
 }
 
 .header {
     border: 1px dotted red;
     display: flex;
     align-items: center;
-    justify-content: center;
+}
+
+.mainmenu {
+    width: 100%;
+    display: flex;
+    float: left;
+    text-align: center;
+    align-items: center;
+    border: 1px dotted green;
+    
+    > .openlogin {
+        width: 20%;
+    }
+    
+    > .dummy80 {
+        width: 80%;
+    }
+    
+    > .account {
+        width: 20%;
+    }
+    
+    > .chats {
+        width: 20%;
+    }
+    
+    > .calendar {
+        width: 20%;
+    }
+    
+    > .grades {
+        width: 20%;
+    }
+    
+    > .settings {
+        width: 20%;
+    }
 }
 
 /* NEW FROM LOREAL */
@@ -25,7 +61,6 @@ html, body {
     text-decoration: none;
     color: #fff;
     display: inline-block;
-    font-family: 'Open Sans';
     font-weight: 100;
     border: none;
     color: white;
@@ -42,7 +77,6 @@ html, body {
     border: 1px dotted blue;
     width: 100%;
     background: #182B3C;
-    font-family: 'Open Sans';
     padding: 20px;
         
     > .welcome {
@@ -59,7 +93,6 @@ html, body {
 /* The userview consists of the field of available chats and the chat area itself */
 .userview {
     width: 100%;
-    font-family: 'Open Sans';
         
     > .chatrooms {
         width: 20%;
@@ -128,7 +161,6 @@ html, body {
     top: 100px;
     left: 50%;
     margin-left: -150px;
-    font-family: 'Open Sans';
     font-size: 11px;
     padding: 10px;
     border: solid 1px gray;
