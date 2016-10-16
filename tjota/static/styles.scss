@@ -11,8 +11,13 @@ html, body {
     font-family: 'Open Sans';
 }
 
+// Removing padding and margin to be able to customize this if needed.
+h1 {
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0px 0px 0px;
+}
+
 .header {
-    border: 1px dotted red;
     display: flex;
     align-items: center;
 }
@@ -24,20 +29,21 @@ html, body {
     text-align: center;
     align-items: center;
     justify-content: center;
-    border: 1px dotted green;
     
     > .menuitem {
         width: 20%;
         height: 2em;
-        border: 1px red dotted;
+        background: #ADB2BB;
     }
     
     > .menuitem:hover {
-        background: #f1f1f1;
+        background: lightgreen;
     }
     
     > .dummy80 {
         width: 80%;
+        height: 2em;
+        background: #ADB2BB;
     }
 }
 
@@ -46,7 +52,7 @@ html, body {
     height: 2em;
     position: relative;
     display: inline-block;
-    border: 1px red dotted;
+    background: #ADB2BB;
         
     > .dropdowncontent {
         width: 100%;
@@ -55,90 +61,74 @@ html, body {
 
         > .dropdownitem {
             width: 100%;
-            background: white;
+            background: #f1f1f1;
             border: 1px solid grey;
         }    
 
         > .dropdownitem:hover {
-            background: #f1f1f1;
+            background: lightgreen;
         }
     }
 }
     
     .dropdown:hover {
-            background: #f1f1f1;    
+            background: lightgreen;    
         
             > .dropdowncontent {
                 display: block;
             }
     }
 
-/* The users header should consist of a welcoming message and an option to set the user's status. */
-.userheader {
-    border: 1px dotted blue;
-    width: 100%;
-    background: #182B3C;
-    padding: 20px;
-        
-    > .welcome {
-        font-size: 25px;
-        font-weight: bold;
-        color: white;
-    }
-    > .status {
-        font-size: 18px;
-        color: white;
-    }
-}
-
 /* The userview consists of the field of available chats and the chat area itself */
 .userview {
     width: 100%;
+    height: 600px;
+    display: flex;
         
-    > .chatrooms {
+    > .leftsidebar {
         width: 20%;
-        height: 500px;
-        background: #182B3C;
-        float: left;
-        border: orange dotted 1px;
+        height: 100%;
+        background: #37393C;
+        color: white;
+        padding: 0px 0px 0px 20px;
         
-        > .chatops {
-            text-align: center;
+        > .status {
+            
         }
         
-        > .chats {
-            
-            > .chatlist {
-                list-style-type: none;
-                margin-right: 2em;
-                margin-left: -1em;
+        > .chatrooms {
+
+            > .chatops {
                 
-                > .chatitem {
-                    float: left;
-                    width: 100%;
-                    height: 1,5em;
-                    padding: 2px;
-                    color: white;
-                    border-radius: 5px;
-                    
-                    > button {
-                        float: right;
-                        border-radius: 20%;
-                        font-weight: bold;
-                        background: transparent;
-                        color: transparent;
-                        border: transparent;
+            }
+
+            > .chats {
+
+                > .chatlist {
+                    list-style-type: none;
+                    margin-right: 2em;
+                    margin-left: -1em;
+
+                    > .chatitem {
+                        float: left;
+                        width: 100%;
+                        height: 1,5em;
+                        padding: 2px;
+                        color: white;
+                        border-radius: 5px;
+
+                        > button {
+                            float: right;
+                            border-radius: 20%;
+                            font-weight: bold;
+                            background: #262626;
+                            color:#f5f5f5;
+                            border: 2px solid #f5f5f5;
+                        }
                     }
-                }
-                
-                > .chatitem:hover {
-                    background: #31597B;
-                    
-                    > button {
-                        background: #262626;
-                        color:#f5f5f5;
-                        border: 2px solid #f5f5f5;
-                        //box-shadow: 0 0 3px gray;
+
+                    > .chatitem:hover {
+                        background: #31597B;
                     }
                 }
             }
@@ -147,10 +137,37 @@ html, body {
     
     > .chatview {
         width: 80%;
-        height: 500px;
-        background: #E1AA11;
-        float: left;
-        border: green dotted 1px;
+        height: 100%;
+        display: block;
+        color: black;
+        background: #D0D7E1;
+        
+        > .chatmessages {
+            height: 85%;
+            //background: #D0D7E1;
+            
+            > .chatmessage {
+                list-style-type: none;
+            }
+        }
+        
+        > .chatsendmessages {
+            height: 15%;
+            //background: #D0D7E1;
+            
+            > .typemessage {
+                width: 90%;
+                height: 100%;
+                border-radius: 5px;
+            }
+            
+            > button {
+                width: 9.5%;
+                height: 100%;
+                border-radius: 5px;
+                color: white;
+            }
+        }
     }
 }
 

@@ -87,9 +87,9 @@
         
         <!-- Here starts the user's view once logged in. -->
         <!--<section ng-if="user" class="userview">-->
-        <section class="userview">
+        <div ng-if="user" class="userview">
             <div class="leftsidebar">
-                <span class="welcome">Welcome, [[ user.name ]]</span>
+                <h1>Welcome, [[ user.name ]]</h1>
                 <form class="status">
                     <span ng-hide="status.editable">Your current status is: [[ user.status ]]</span>
                     <button ng-hide="status.editable" ng-click="status.edit()">Edit</button>
@@ -117,9 +117,28 @@
                 </div>
             </div>
             <div class="chatview">
-                This is where messages will go.
+                <div class="chatmessages">
+                    <ul class="chatmessage">
+                        <li>
+                            22:10: Hey sexy :-)
+                        </li>
+                        <li>
+                            22:11: Uuuuh, hi?
+                        </li>
+                        <li>
+                            22:12: Want to hear something exciting?
+                        </li>
+                        <li>
+                            22:12: Oh please don't...
+                        </li>
+                    </ul>
+                </div>
+                <div class="chatsendmessages">
+                    <input type="text" class="typemessage"/>
+                    <button>Send</button>
+                </div>
             </div>
-        </section>
+        </div>
         
     </div>
     <script src="{% static 'angular.min.js' %}"></script>
