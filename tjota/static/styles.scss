@@ -39,57 +39,39 @@ html, body {
     > .dummy80 {
         width: 80%;
     }
-    
-    > .dropdown {
-        width: 20%;
-        height: 2em;
-        position: relative;
-        display: inline-block;
-        border: 1px red dotted;
+}
+
+.dropdown {
+    width: 20%;
+    height: 2em;
+    position: relative;
+    display: inline-block;
+    border: 1px red dotted;
         
-        > .dropdowncontent {
+    > .dropdowncontent {
+        width: 100%;
+        display: none;
+        position: absolute;
+
+        > .dropdownitem {
             width: 100%;
-            display: none;
-            position: absolute;
-            
-            > .dropdownitem {
-                width: 100%;
-                background: white;
-                border: 1px solid grey;
-            }    
-            
-            > .dropdownitem:hover {
-                background: #f1f1f1;
-            }
+            background: white;
+            border: 1px solid grey;
+        }    
+
+        > .dropdownitem:hover {
+            background: #f1f1f1;
         }
     }
+}
     
-    > .dropdown:hover {
+    .dropdown:hover {
             background: #f1f1f1;    
         
             > .dropdowncontent {
                 display: block;
             }
-        }
-}
-
-/* NEW FROM LOREAL */
-.btngul {
-    background: #E1AE3A;
-    background-image: linear-gradient(#E1CE9E ,#E1AE3A);
-    text-decoration: none;
-    color: #fff;
-    display: inline-block;
-    font-weight: 100;
-    border: none;
-    color: white;
-    width: 60px;
-    height: 60px;
-    text-align: center;
-    font-size: 15px;
-    border-radius: 12px;
-    font-weight: bold;
-}
+    }
 
 /* The users header should consist of a welcoming message and an option to set the user's status. */
 .userheader {
