@@ -53,11 +53,14 @@ html, body {
             position: absolute;
             
             > .dropdownitem {
-                
-                > button {
-                    width: 100%;
-                }
+                width: 100%;
+                background: white;
+                border: 1px solid grey;
             }    
+            
+            > .dropdownitem:hover {
+                background: #f1f1f1;
+            }
         }
     }
     
