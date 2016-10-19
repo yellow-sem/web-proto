@@ -53,7 +53,8 @@ class ChatBackendClient(object):
 
             print('(recv) << {}'.format(data))
             data = data.decode()
-            self.on_recv(data)
+            for d in data.split('\n'):
+                self.on_recv(d)
 
 
 client = None
