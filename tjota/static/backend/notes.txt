@@ -1,0 +1,5 @@
+room:create e4009448-4f29-fd8d-7a4a-f97234665541 ok
+
+room:self any e05c83a0-2a1c-4234-a0ac-2c7af25bec6e 'Philips Cool Room' public
+
+room:* any e05c83a0-2a1c-4234-a0ac-2c7af25bec6e << fc30b4f4-7433-4aa3-9055-b93094775aec guscrocph@yellow
