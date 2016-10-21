@@ -11,6 +11,7 @@
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
       s4() + '-' + s4() + s4() + s4();
   }
+
 /********************************
 * Client API Object
 * This is the client to the server backend. 
@@ -28,37 +29,43 @@
     this.callbacks = {};
 
     // Servers responses mapped to function
-    this.responseRoute = {     
+    this.responseRoutes = {     
       "room:*": this.onRoomMemberChange.bind(this), // Members in/out
       "room:self" : this.onRoomChange.bind(this), // new room / removed
+      "msg:recv" : this.onMessageReceived.bind(this), // When the user gets a message
     }; 
-    // << is join room
-    // >> is leave room
-    // This is not accurate, fix
-    this.protocol = {
-      "0" : "command",
-      "1" : "id",
-      "2" : "args"
-    };
   }
 
   Client.prototype.formatResponse = function (resp) {
-    var formatted = {};
-    var data = resp.split(" ");
-    for (var string in data) {
-      if (string in this.protocol) {
-        formatted[this.protocol[string]] = data[parseInt(string)];
-      }
+    var formatted = {
+      "command":  "",
+      "id": "",
+      "args": []
+    };
+    // Regex for a response
+    var data = resp.match(/('(.+?)'|[A-Za-z0-9\w\:\-\*<<\@]+)/g);
+    formatted["command"] = data[0];
+    formatted["id"] = data[1];
+    var argsData = data.splice(2, data.length);
+    for (var key in argsData) {
+      // split on ' to ensure that escaped strings get joined to normal space seperated strings.
+      formatted["args"].push(argsData[key].split("'").join(""));
     }
     return formatted
   }
 
-  Client.prototype.onRoomMemberChange = function (event) {
-    
+  Client.prototype.onRoomMemberChange = function (resp) {
+    console.log("Room Members changed: ");
+    console.log(resp);
   }
 
-  Client.prototype.onRoomChange = function (event) {
-    
+  Client.prototype.onRoomChange = function (resp) {
+    console.log("Rooom changed: ");
+    console.log(resp);
+  }
+
+  Client.prototype.onMessageReceived = function (message) {
+
   }
 
   Client.prototype.onmessage = function (event) {
@@ -67,8 +74,12 @@
       this.callbacks[response.id](response);
       delete this.callbacks[response.id];
     } else {
-      console.log("Event data: " + event.data);
-      console.log("Response had no callback function: " + response);
+      if (response.command in this.responseRoutes) {
+        this.responseRoutes[response.command](response);
+      } else {
+        console.log("Event data: " + event.data);
+        console.log("Response had no callback function: " + response);
+      }
     }
   }
 
@@ -143,7 +154,12 @@
 
   // [roomid] << [userid] [usercredentials]
   function joinRoom(roomid, userid, credentials, callback) {
-    
+    var id = client.registerCallback(function (data) {
+      if (data.command == "room:join") {
+        callback({room: data});
+      }
+    });
+    client.send("room:join", id, [roomid, "<<", userid, credentials]);
   }
 
   function inviteToRoom(callback) {
@@ -151,8 +167,13 @@
   }
 
   // [roomid] >> [userid] [usercredentials]
-  function leaveRoom(callback) {
-    
+  function leaveRoom(roomid, userid, credentials, callback) {
+    var id = client.registerCallback(function (data) {
+      if (data.command == "room:leave") {
+        callback({room: data});
+      }
+    });
+    client.send("room:leave", id, [roomid, ">>", userid, credentials]);
   }
 
   function sendMessageTo(to, from, callback) {
@@ -177,6 +198,8 @@
 
 
   exports.login = login;
+  exports.onRoomChange = client.onRoomChange;
+  exports.onRoomMemberChange = client.onRoomMemberChange;
   
   return exports;
   
