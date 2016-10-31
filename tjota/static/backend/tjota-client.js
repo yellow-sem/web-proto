@@ -1,4 +1,4 @@
-(function () {
+window.backend = (function () {
   
   var exports = {};
 
@@ -15,9 +15,8 @@
 /********************************
 * Client API Object
 * This is the client to the server backend. 
-* Sends requests and recivies messages.
+* Sends requests and receives messages.
 *********************************/  
-
 
   var Client = function() {
     this.socket = new WebSocket('ws://' + location.host + '/backend');
