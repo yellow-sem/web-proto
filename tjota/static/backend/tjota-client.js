@@ -1,4 +1,4 @@
-window.backend = (function () {
+(function () {
   
   var exports = {};
 
@@ -97,7 +97,8 @@ window.backend = (function () {
   }
 
   Client.prototype.registerCallback = function (Function) {
-    var id = guid();
+    // Shoud never be any duplicates....
+    var id = guid();    
     this.callbacks[id] = Function;
     return id;
   }
@@ -106,6 +107,12 @@ window.backend = (function () {
   Client.prototype.constructor = Client;
 
   var client = new Client();
+
+  /****************************************
+   *
+   * API
+   *
+   ****************************************/
 
 
   // Login can be both [Credential, Password] or [SessionId]
@@ -132,11 +139,21 @@ window.backend = (function () {
   }
 
   function listRooms(callback) {
-    
+    var id = client.registerCallback(function (data) {
+      if (data.command == "rooms:list") {
+        callback({rooms: data});
+      }
+    });
+    client.send("room:list", id, []);
   }
 
   function discoverRooms(callback) {
-    
+    var id = client.registerCallback(function (data) {
+      if (data.command == "rooms:discover") {
+        callback({rooms: data});
+      }
+    });
+    client.send("room:discover", id, []);
   }
 
   function createRoom(name, type, callback) {
@@ -162,8 +179,13 @@ window.backend = (function () {
     client.send("room:join", id, [roomid, "<<", userid, credentials]);
   }
 
-  function inviteToRoom(callback) {
-
+  function inviteToRoom(credential, callback) {
+    var id = client.registerCallback(function (data) {
+      if (data.command == "room:invite") {
+        callback({room: data});
+      }
+    });
+    client.send("room:invite", id, [credential]);
   }
 
   // [roomid] >> [userid] [usercredentials]
@@ -176,24 +198,44 @@ window.backend = (function () {
     client.send("room:leave", id, [roomid, ">>", userid, credentials]);
   }
 
-  function sendMessageTo(to, from, callback) {
-
+  function sendMessageTo(to, message, callback) {
+    var id = client.registerCallback(function (resp) {
+      if (data.command == "msg:send") {
+        callback({response: resp});
+      }
+    });
+    client.send("msg:send", [to, "'" + message + "'"]);
   }
 
-  function receiveMessageFrom(from, to, callback) {
-    
+  function requestMessage(callback) {
+    var id = client.registerCallback(function (resp) {
+      if (data.command = "msg:req") {
+        callback({response: resp});
+      }
+    });
+    client.send("msg:req", id, []);
   }
 
-  function requestMessage(from, to, callback) {
-
-  }
+  /**
+     EXPORTS
+   **/
 
 
   exports.login = login;
+  exports.logout = logout;
+  exports.createRoom = createRoom;
+  exports.leaveRoom = leaveRoom;
+  exports.joinRoom = joinRoom;
+  exports.listRooms = listRooms;
+  exports.leaveRoom = leaveRoom;
+  exports.requestMessages = requestMessage;
+  exports.sendMessageTo = sendMessageTo;
   exports.onRoomChange = client.onRoomChange;
   exports.onRoomMemberChange = client.onRoomMemberChange;
-  
-  return exports;
+
+
+  // Exports to window.
+  window.backend = exports;
   
 })();
 
