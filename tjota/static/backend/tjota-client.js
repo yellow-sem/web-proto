@@ -65,7 +65,8 @@
   }
 
   Client.prototype.onMessageReceived = function (message) {
-
+    console.log("Message received");
+    console.log(message);
   }
 
   Client.prototype.onmessage = function (event) {
@@ -187,14 +188,6 @@
   function requestMessage(from, to, callback) {
 
   }
-
-  window.setTimeout(function() {
-    login(["guscrocph@yellow", "gav3_SYV"], function(resp) {
-      createRoom("Philips Cool Room", "public", function (room) {
-        console.log(room);
-      });
-    });
-  }, 3000);
 
 
   exports.login = login;
