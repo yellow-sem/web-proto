@@ -103,10 +103,26 @@
     return id;
   }
 
+  Client.prototype.registerCallback = function (id, Function) {
+    // Shoud never be any duplicates....
+    this.callbacks[id] = Function;
+  }
+
   Client.prototype = Object.create(Client.prototype);
   Client.prototype.constructor = Client;
 
   var client = new Client();
+
+  function command(command, id, args, success, failure) {
+    client.registerCallback(id, function (data) {
+      if (data.args == "err") {
+        failure(data);
+      } else {
+        success(data);
+      }
+    });
+    client.send(command, id, args);
+  }
 
   /****************************************
    *
@@ -114,106 +130,77 @@
    *
    ****************************************/
 
-
-  // Login can be both [Credential, Password] or [SessionId]
-  function login (login, callback) {
-    var id = client.registerCallback(function (data) {
-      if (data.command == "auth:login") {
-        callback({session: data.args});
-      }
-    });
-    client.send("auth:login", id, login);
-  };
-
-  function logout (session, callback) {
-    var id = client.registerCallback(function (data) {
-      if (data.command == "auth:logout") {
-        callback({session: false});
-      }
-    });
-    client.send("auth:logout", id, [session]);
+  // [Credential@Provider, Password]
+  function loginWithCredential (credential, success, failure) {
+    command("auth:login", guid(), credential, success, failure);
   }
 
-  function check (callback) {
-    
+  // [guid]
+  function loginWithSession (session, success, failure) {
+    command("auth:login", guid(), session, success, failure);
+  }
+  
+  // [guid]
+  function logoutFromSession (session, success, failure) {
+    command("auth:logout", guid(), session, success, failure);
   }
 
-  function listRooms(callback) {
-    var id = client.registerCallback(function (data) {
-      if (data.command == "rooms:list") {
-        callback({rooms: data});
-      }
-    });
-    client.send("room:list", id, []);
+  function check (success, failure) {
+    command("auth:check", guid(), [], success, failure);
   }
 
-  function discoverRooms(callback) {
-    var id = client.registerCallback(function (data) {
-      if (data.command == "rooms:discover") {
-        callback({rooms: data});
-      }
-    });
-    client.send("room:discover", id, []);
+  function listRooms (success, failure) {
+    command("room:list", guid(), [], success, failure);
   }
 
-  function createRoom(name, type, callback) {
-    var id = client.registerCallback(function (data) {
-      if (data.command == "room:create") {
-        if (data.args == 'err') {
-          console.log("Error on room creation");
-        } else {
-          callback({room: data});
-        }
-      }
-    });
-    client.send("room:create", id, ["'" + name + "'", type]);
+  function discoverRooms (success, failure) {
+    command("room:discover", guid(), [], success, failure);
+  }
+
+  function createRoom (name, type, success, failure) {
+    command("room:create", 
+            guid(),
+            ["'" + name + "'", type], 
+            success, 
+            failure);
   }
 
   // [roomid] << [userid] [usercredentials]
-  function joinRoom(roomid, userid, credentials, callback) {
-    var id = client.registerCallback(function (data) {
-      if (data.command == "room:join") {
-        callback({room: data});
-      }
-    });
-    client.send("room:join", id, [roomid, "<<", userid, credentials]);
+  function joinRoom (roomid, userid, credentials, success, failure) {
+    command("room:join",
+            guid(),
+            [roomid, "<<", userid, credentials], 
+            success, 
+            failure);
   }
 
-  function inviteToRoom(credential, callback) {
-    var id = client.registerCallback(function (data) {
-      if (data.command == "room:invite") {
-        callback({room: data});
-      }
-    });
-    client.send("room:invite", id, [credential]);
+  function inviteToRoom (credential, success, failure) {
+    command("room:invite", 
+            guid(),
+            [credential], 
+            success, 
+            failure);
   }
 
-  // [roomid] >> [userid] [usercredentials]
-  function leaveRoom(roomid, userid, credentials, callback) {
-    var id = client.registerCallback(function (data) {
-      if (data.command == "room:leave") {
-        callback({room: data});
-      }
-    });
-    client.send("room:leave", id, [roomid, ">>", userid, credentials]);
+   // [roomid] >> [userid] [usercredentials]
+  function leaveRoom (roomid, userid, credentials, success, failure) {
+    command("room:leave", 
+            guid(),
+            [roomid, ">>", userid, credentials], 
+            success, 
+            failure);
   }
 
-  function sendMessageTo(to, message, callback) {
-    var id = client.registerCallback(function (resp) {
-      if (data.command == "msg:send") {
-        callback({response: resp});
-      }
-    });
-    client.send("msg:send", [to, "'" + message + "'"]);
+  function sendMessageTo (to, message, success, failure) { 
+    command("msg:send", 
+            guid(),
+            [to, "'" + message + "'"], 
+            success, 
+            failure);
   }
 
-  function requestMessage(callback) {
-    var id = client.registerCallback(function (resp) {
-      if (data.command = "msg:req") {
-        callback({response: resp});
-      }
-    });
-    client.send("msg:req", id, []);
+  function requestMessages (success, failure) {
+    command("msg:req", guid(), [], success, failure);
   }
 
   /**
@@ -221,14 +208,15 @@
    **/
 
 
-  exports.login = login;
-  exports.logout = logout;
+  exports.loginWithSession = loginWithSession;
+  exports.loginWithCredential = loginWithCredential;
+  exports.logoutFromSession = logoutFromSession;
   exports.createRoom = createRoom;
   exports.leaveRoom = leaveRoom;
   exports.joinRoom = joinRoom;
   exports.listRooms = listRooms;
   exports.leaveRoom = leaveRoom;
-  exports.requestMessages = requestMessage;
+  exports.requestMessages = requestMessages;
   exports.sendMessageTo = sendMessageTo;
   exports.onRoomChange = client.onRoomChange;
   exports.onRoomMemberChange = client.onRoomMemberChange;

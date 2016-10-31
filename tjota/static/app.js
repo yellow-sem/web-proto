@@ -62,23 +62,20 @@
                 $scope.login.data.password = null;
             },
             submit: function (data) {
-                // Backend is the name of the tjota-client, the function called is named login which takes an array as input.
-                backend.login(
-                    // Username as 'username@provider'
-                    [data.username, data.password],
-                    function (resp) {
-                        console.log(resp);
-                        
-                        $scope.session = resp.session[0];
-
-                        userdata = data.username.split("@");
-                        $scope.user.name = userdata[0];
-                        $scope.user.provider = userdata[1];
-
-                        $scope.login.hide();
-                        $scope.$apply();
-                    }
-                );
+              // Backend is the name of the tjota-client, the function called is named login which takes an array as input.
+              backend.loginWithCredential([data.username, data.password],
+                                          function(response) {
+                                            $scope.session = response.args[0];
+                                            userdata = data.username.split("@");
+                                            $scope.user.name = userdata[0];
+                                            $scope.user.provider = userdata[1];
+                                            
+                                            $scope.login.hide();
+                                            $scope.$apply();
+                                          },
+                                          function (err) {
+                                            console.log(err);
+                                          });
             }
         };
         
