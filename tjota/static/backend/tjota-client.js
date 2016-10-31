@@ -197,6 +197,7 @@ window.backend = (function () {
 
 
   exports.login = login;
+  exports.logout = logout;
   exports.onRoomChange = client.onRoomChange;
   exports.onRoomMemberChange = client.onRoomMemberChange;
   
