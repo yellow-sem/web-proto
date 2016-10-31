@@ -68,21 +68,6 @@
                 $scope.login.data.username = null;
                 $scope.login.data.password = null;
             },
-            submit: function (data) {
-              // Backend is the name of the tjota-client, the function called is named login which takes an array as input.
-              backend.loginWithCredential([data.username, data.password],
-                                          function(response) {
-                                            $scope.session = response.args[0];
-                                            userdata = data.username.split("@");
-                                            $scope.user.name = userdata[0];
-                                            $scope.user.provider = userdata[1];
-                                            
-                                            $scope.login.hide();
-                                            $scope.$apply();
-                                          },
-                                          function (err) {
-                                            console.log(err);
-                                          });
             submit: function () {
                 // Prepares to send backend login function information, based on if a session already exists.
                 loginInfo = null;
@@ -104,37 +89,31 @@
                         console.log(response);
                         
                         status = response.session[0];
-                        // Err is returned if the authentication to GUL did not work.
-                        if (status == "err") {
-                            alert("Login failed.");
-                        // Successful login
-                        } else {
-                            // If login was through an old saved sessionID
-                            if (loginInfo.length == 1) {
-                                $scope.user.name = localStoreOps.getUsername();
-                                $scope.user.provider = localStoreOps.getProvider();
-                            // If login was through GUL credentials
-                            } else {
-                                userdata = loginInfo[0].split("@");
-                                $scope.user.name = userdata[0];
-                                $scope.user.provider = userdata[1];
-                                
-                                localStoreOps.setSession(response.session[0]);
-                                localStoreOps.setUsername(userdata[0]);
-                                localStoreOps.setProvider(userdata[1]);
-                            }
-                            
-                            $scope.login.hide();
-                            $scope.$apply();
-                        }
-                    },
-		    function (err) {
-			console.log(err);
-		    }
-                );
-            }
-        };
-        
+
+                      if (loginInfo.length == 1) { // If login was through an old saved sessionID
+                        $scope.user.name = localStoreOps.getUsername();
+                        $scope.user.provider = localStoreOps.getProvider();
+                      } else { // If login was through GUL credentials
+                        userdata = loginInfo[0].split("@");
+                        $scope.user.name = userdata[0];
+                        $scope.user.provider = userdata[1];
+                        
+                        localStoreOps.setSession(response.session[0]);
+                        localStoreOps.setUsername(userdata[0]);
+                        localStoreOps.setProvider(userdata[1]);
+                      }
+                      
+                      $scope.login.hide();
+                      $scope.$apply();
+                    }
+                },
+	      function (err) {
+		console.log(err);
+	      }
+            );
+        }
+    };
+                   
         $scope.chat = {
             insertChat: false,
             data: {
