@@ -114,7 +114,6 @@
    *
    ****************************************/
 
-
   // Login can be both [Credential, Password] or [SessionId]
   function login (login, callback) {
     var id = client.registerCallback(function (data) {

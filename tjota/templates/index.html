@@ -41,7 +41,7 @@
             <button ng-click="login.hide()">&times;</button>
           </div>
             <!-- The ng-submit takes the data gathered in the form and submits it with a call to the login funcion. -->
-          <form ng-submit="login.submit(login.data)">
+          <form ng-submit="login.submit()">
             <input type="text" ng-model="login.data.username" placeholder="Username"/>
             <input type="password" ng-model="login.data.password" placeholder="Password"/>
             <label>
@@ -55,12 +55,12 @@
         
         <!-- Main navigation menu, displayed at the top of the screen, just below the logo images. -->
         <div class="mainmenu">
-            <div ng-if="!session" ng-click="login.show()" class="menuitem">
+            <div ng-if="!user.name" ng-click="login.show()" class="menuitem">
                 Log in
             </div>
-            <div ng-if="!session" class="dummy80">
+            <div ng-if="!user.name" class="dummy80">
             </div>
-            <div ng-if="session" class="dropdown">
+            <div ng-if="user.name" class="dropdown">
                 Account
                 <div class="dropdowncontent">
                     <div class="dropdownitem">
@@ -71,16 +71,16 @@
                     </div>
                 </div>
             </div>
-            <div ng-if="session" class="menuitem">
+            <div ng-if="user.name" class="menuitem">
                 Chats
             </div>
-            <div ng-if="session" class="menuitem">
+            <div ng-if="user.name" class="menuitem">
                 Calendar
             </div>
-            <div ng-if="session" class="menuitem">
+            <div ng-if="user.name" class="menuitem">
                 Grades
             </div>
-            <div ng-if="session" class="menuitem">
+            <div ng-if="user.name" class="menuitem">
                 Settings
             </div>
         </div>
@@ -89,11 +89,10 @@
         Here starts the user's view once logged in. The ng-if keeps this section hidden until the user variable
         is changed from null -> and actual user
         -->
-        <div ng-if="session" class="userview">
+        <div ng-if="user.name" class="userview">
             <div class="leftsidebar">
                 <h1>Welcome, [[ user.name ]]</h1>
-                <h1>Provider: [[ user.provider ]]</h1>
-                <h1>Session: [[ session ]]</h1>
+                <p>Provider: [[ user.provider ]]</p>
                 <form class="status">
                     <span ng-hide="status.editable">Your current status is: [[ user.status ]]</span>
                     <button ng-hide="status.editable" ng-click="status.edit()">Edit</button>
@@ -156,6 +155,7 @@
     <script src="{% static 'angular-route.min.js' %}"></script>
 
     <script src="{% static 'backend/tjota-client.js' %}"></script>
+    <script src="{% static 'localStorage/localStoreOps.js' %}"></script>
     <script src="{% static 'app.js' %}"></script>
   </body>
 </html>

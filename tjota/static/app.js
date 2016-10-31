@@ -26,19 +26,26 @@
             name: null,
             provider: null
         };
-        $scope.session = null;
 
         $scope.logout = {
             submit: function () {
+                currentSession = localStoreOps.getSession();
+                
                 backend.logout(
-                    $scope.session,
-                    function (resp) {
-                        console.log(resp);
+                    currentSession, // The session ID needs to be provided upon logout to remove the session from the system.
+                    function (response) {
+                        // Simply log the response.
+                        console.log(response);
                     }
                 );
+                // Remove local variable bindings
                 $scope.user.name = null;
                 $scope.user.provider = null;
-                $scope.session = null;
+                
+                // Remove LocalStorage variables, username, provider and session.
+                localStoreOps.removeSession();
+                localStoreOps.removeUsername();
+                localStoreOps.removeProvider();
             }
         };
 
@@ -61,22 +68,50 @@
                 $scope.login.data.username = null;
                 $scope.login.data.password = null;
             },
-            submit: function (data) {
+            submit: function () {
+                // Prepares to send backend login function information, based on if a session already exists.
+                loginInfo = null;
+                existingSession = localStoreOps.getSession();
+                
+                if (existingSession == null) {
+                    loginInfo = [$scope.login.data.username, $scope.login.data.password];
+                } else {
+                    loginInfo = [existingSession];
+                }
+                
                 // Backend is the name of the tjota-client, the function called is named login which takes an array as input.
                 backend.login(
-                    // Username as 'username@provider'
-                    [data.username, data.password],
-                    function (resp) {
-                        console.log(resp);
+                    loginInfo,
+                    /* Respose is a dictionary with a session item. Session is an array with the first item being the returned
+                     session ID to be used for *this* session. The session should be saved in localstorage so it can be used to
+                     easily log back in if the browser has not been closed. */
+                    function (response) {
+                        console.log(response);
                         
-                        $scope.session = resp.session[0];
-
-                        userdata = data.username.split("@");
-                        $scope.user.name = userdata[0];
-                        $scope.user.provider = userdata[1];
-
-                        $scope.login.hide();
-                        $scope.$apply();
+                        status = response.session[0];
+                        // Err is returned if the authentication to GUL did not work.
+                        if (status == "err") {
+                            alert("Login failed.");
+                        // Successful login
+                        } else {
+                            // If login was through an old saved sessionID
+                            if (loginInfo.length == 1) {
+                                $scope.user.name = localStoreOps.getUsername();
+                                $scope.user.provider = localStoreOps.getProvider();
+                            // If login was through GUL credentials
+                            } else {
+                                userdata = loginInfo[0].split("@");
+                                $scope.user.name = userdata[0];
+                                $scope.user.provider = userdata[1];
+                                
+                                localStoreOps.setSession(response.session[0]);
+                                localStoreOps.setUsername(userdata[0]);
+                                localStoreOps.setProvider(userdata[1]);
+                            }
+                            
+                            $scope.login.hide();
+                            $scope.$apply();
+                        }
                     }
                 );
             }
