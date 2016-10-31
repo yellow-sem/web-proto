@@ -22,13 +22,23 @@
 
     app.controller('main', function ($scope, apps) {
 
-        $scope.user = null;
-        $scope.token = null;
+        $scope.user = {
+            name: null,
+            provider: null
+        };
+        $scope.session = null;
 
         $scope.logout = {
             submit: function () {
-                $scope.user = null;
-                $scope.token = null;
+                backend.logout(
+                    $scope.session,
+                    function (resp) {
+                        console.log(resp);
+                    }
+                );
+                $scope.user.name = null;
+                $scope.user.provider = null;
+                $scope.session = null;
             }
         };
 
@@ -52,20 +62,20 @@
                 $scope.login.data.password = null;
             },
             submit: function (data) {
-                apps.chat.login(
-                    data.username,
-                    data.password,
-                    function (data) {
-                        if (data.success) {
-                            $scope.user = data.user;
-                            $scope.token = data.token;
-                            
-                            $scope.login.hide();
-                        } else {
-                            $scope.user = null;
-                            $scope.token = null;
-                        }
+                // Backend is the name of the tjota-client, the function called is named login which takes an array as input.
+                backend.login(
+                    // Username as 'username@provider'
+                    [data.username, data.password],
+                    function (resp) {
+                        console.log(resp);
+                        
+                        $scope.session = resp.session[0];
 
+                        userdata = data.username.split("@");
+                        $scope.user.name = userdata[0];
+                        $scope.user.provider = userdata[1];
+
+                        $scope.login.hide();
                         $scope.$apply();
                     }
                 );
@@ -149,6 +159,8 @@
                 );
             },
         };
+        
+        
     });
 
 })(TJOTA);

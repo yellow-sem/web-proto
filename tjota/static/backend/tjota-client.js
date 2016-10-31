@@ -1,4 +1,4 @@
-(function () {
+window.backend = (function () {
   
   var exports = {};
 
@@ -17,7 +17,6 @@
 * This is the client to the server backend. 
 * Sends requests and receives messages.
 *********************************/  
-
 
   var Client = function() {
     this.socket = new WebSocket('ws://' + location.host + '/backend');
