@@ -31,10 +31,13 @@
             submit: function () {
                 currentSession = localStoreOps.getSession();
                 
-                backend.logout(
+                backend.logoutFromSession(
                     currentSession, // The session ID needs to be provided upon logout to remove the session from the system.
                     function (response) {
                         // Simply log the response.
+                        console.log(response);
+                    },
+                    function (err) {
                         console.log(response);
                     }
                 );
@@ -68,16 +71,23 @@
                 $scope.login.data.username = null;
                 $scope.login.data.password = null;
             },
-//            restoreSession: function () {
-//                existingSession = [localStoreOps.getSession()];
-//                
-//                if (existingSession != null) {
-//                    backend.loginWithCredential(
-//                        existingSession,
-//                            
-//                    );
-//                }
-//            },
+            restoreSession: function () {
+                existingSession = localStoreOps.getSession();
+                
+                if (existingSession != null) {
+                    loginInfo = [existingSession];
+                    
+                    backend.loginWithSession(
+                        loginInfo,
+                        function (response) {
+                            console.log("Successfully restored session!");
+                        },
+                        function (err) {
+                            console.log(err);
+                        }
+                    );
+                }
+            },
             submit: function () {
                 // Prepares to send backend login function information, based on if a session already exists.
                 loginInfo = null;
