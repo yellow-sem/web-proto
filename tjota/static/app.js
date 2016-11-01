@@ -176,14 +176,13 @@
                         roomType,
                         function (response) {
                             console.log(response);
-                            
-                            $scope.chat.hide();
-                            $scope.chat.reset();
                         },
                         function (err) {
                             console.log(err);
                         }
                     );
+                    $scope.chat.hide();
+                    $scope.chat.reset();
                 }
             },
             leaveRoom: function (chatRoom) {
