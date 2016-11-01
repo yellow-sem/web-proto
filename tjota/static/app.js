@@ -96,9 +96,7 @@
                      session ID to be used for *this* session. The session should be saved in localstorage so it can be used to
                      easily log back in if the browser has not been closed. */
                     function (response) {
-                        console.log(response);
-                        
-                        status = response.session[0];
+                        session = response.args[0];
 
                       if (loginInfo.length == 1) { // If login was through an old saved sessionID
                         $scope.user.name = localStoreOps.getUsername();
@@ -108,7 +106,7 @@
                         $scope.user.name = userdata[0];
                         $scope.user.provider = userdata[1];
                         
-                        localStoreOps.setSession(response.session[0]);
+                        localStoreOps.setSession(session);
                         localStoreOps.setUsername(userdata[0]);
                         localStoreOps.setProvider(userdata[1]);
                       }
@@ -116,9 +114,10 @@
                       $scope.login.hide();
                       $scope.$apply();
                     },
-	          function (err) {
-		          console.log(err);
-	          });
+                    function (err) {
+                        console.log(err);
+                    }
+                );
             }
         };
                    
