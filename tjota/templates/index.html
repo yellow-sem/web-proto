@@ -102,13 +102,19 @@
                 </form>
                 <div class="chatrooms">
                     <div class="chatops">
-                        <button ng-click="chat.getChatRooms()">Get chatrooms</button>
+                        <button ng-click="chat.listRooms()">Refresh chat rooms</button>
                         <br>
-                        <input ng-show="chat.insertChat" type="text" ng-model="chat.data.newChat"/>
-                        <button ng-show="chat.insertChat" ng-click="chat.addChat()">Save chat</button>
-                        <button ng-show="chat.insertChat" ng-click="chat.hide()">Cancel</button>
-
-                        <button ng-hide="chat.insertChat" ng-click="chat.show()">Add chat</button>
+                        <div ng-show="chat.data.insertChat">
+                            <form ng-submit="chat.createRoom()">
+                                <input type="text" ng-model="chat.data.chatName"/>
+                                <label>
+                                    <input type="checkbox" ng-model="chat.data.chatType"> Public
+                                </label>
+                                <button>Save room</button>
+                            </form>
+                        </div>
+                        <button ng-hide="chat.data.insertChat" ng-click="chat.show()">Create room</button>
+                        <button ng-show="chat.data.insertChat" ng-click="chat.hide()">Cancel</button>
                     </div>
                     <div class="chats">
                         <ul class="chatlist">

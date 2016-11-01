@@ -27,6 +27,10 @@
             provider: null
         };
 
+        /*
+        LOGOUT COMMANDS
+        */
+        
         $scope.logout = {
             submit: function () {
                 currentSession = localStoreOps.getSession();
@@ -52,6 +56,10 @@
             }
         };
 
+        /*
+        LOGIN COMMANDS
+        */
+        
         $scope.login = {
             visible: false,
             show: function () {
@@ -108,19 +116,20 @@
                     function (response) {
                         session = response.args[0];
 
-                      if (loginInfo.length == 1) { // If login was through an old saved sessionID
-                        $scope.user.name = localStoreOps.getUsername();
-                        $scope.user.provider = localStoreOps.getProvider();
-                      } else { // If login was through GUL credentials
-                        userdata = loginInfo[0].split("@");
-                        $scope.user.name = userdata[0];
-                        $scope.user.provider = userdata[1];
+                        if (loginInfo.length == 1) { // If login was through an old saved sessionID
+                            $scope.user.name = localStoreOps.getUsername();
+                            $scope.user.provider = localStoreOps.getProvider();
+                        } else { // If login was through GUL credentials
+                            userdata = loginInfo[0].split("@");
+                            $scope.user.name = userdata[0];
+                            $scope.user.provider = userdata[1];
+
+                            localStoreOps.setSession(session);
+                            localStoreOps.setUsername(userdata[0]);
+                            localStoreOps.setProvider(userdata[1]);
+                        }
+                      $scope.chat.listRooms();
                         
-                        localStoreOps.setSession(session);
-                        localStoreOps.setUsername(userdata[0]);
-                        localStoreOps.setProvider(userdata[1]);
-                      }
-                      
                       $scope.login.hide();
                       $scope.$apply();
                     },
@@ -131,34 +140,48 @@
             }
         };
                    
+        /**
+        CHAT COMMANDS
+        */
+        
         $scope.chat = {
-            insertChat: false,
+            chatrooms: [],
             data: {
-                chatrooms: [],
-                newChat: null
+                insertChat: false,
+                chatName: null,
+                chatType: false
             },
-            getChatRooms: function () {
-                apps.chat.getchatrooms(
-                    $scope.user,
-                    function (data) {
-                        if (data.success) {
-                            $scope.chat.data.chatrooms = data.chatrooms;
-                        }
-                        $scope.$apply();
+            listRooms: function () {
+                backend.listRooms(
+                    function (response) {
+                        console.log(response);
+                    },
+                    function (err) {
+                        console.log(err);
                     }
                 );
             },
-            addChat: function () {
-                if ($scope.chat.data.newChat != null) {
-                    apps.chat.addchat(
-                        $scope.user,
-                        $scope.chat.data.newChat,
-                        function (data) {
-                            if (data.success) {
-                                $scope.chat.data.chatrooms.push(data.chatroom);
-                                $scope.chat.hide();
-                            }
-                            $scope.$apply();
+            createRoom: function () {
+                if ($scope.chat.data.chatName != null) {
+                    
+                    roomType = null;
+                    if ($scope.chat.data.chatType) {
+                        roomType = "public";
+                    } else {
+                        roomType = "private";
+                    }
+                    
+                    backend.createRoom(
+                        $scope.chat.data.chatName,
+                        roomType,
+                        function (response) {
+                            console.log(response);
+                            
+                            $scope.chat.hide();
+                            $scope.chat.reset();
+                        },
+                        function (err) {
+                            console.log(err);
                         }
                     );
                 }
@@ -180,18 +203,23 @@
                 );
             },
             show: function () {
-                $scope.chat.insertChat = true;
+                $scope.chat.data.insertChat = true;
                 $scope.chat.reset();
             },
             hide: function () {
-                $scope.chat.insertChat = false;
+                $scope.chat.data.insertChat = false;
                 $scope.chat.reset();
             },
             reset: function () {
-                $scope.chat.data.newChat = null;
+                $scope.chat.data.chatName = null;
+                $scope.chat.data.chatType = false;
             },
         };
 
+        /**
+        STATUS COMMANDS
+        */
+        
         $scope.status = {
             editable: false,
             edit: function () {
