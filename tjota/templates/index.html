@@ -89,7 +89,8 @@
         Here starts the user's view once logged in. The ng-if keeps this section hidden until the user variable
         is changed from null -> and actual user
         -->
-        <div ng-if="user.name" class="userview">
+        <!--<div ng-if="user.name" class="userview">-->
+        <div class="userview">
             <div class="leftsidebar">
                 <h1>Welcome, [[ user.name ]]</h1>
                 <p>Provider: [[ user.provider ]]</p>
@@ -120,32 +121,8 @@
                 </div>
             </div>
             <div class="chatview">
-                <div class="chatmessages">
-                    <ul class="chatmessage">
-                        <li>
-                            22:10 [[ user.name ]]: The moon is made out of cheese. :-)
-                        </li>
-                        <li>
-                            22:11 [[ user.name ]]: Uuuuh, and what scientific fact do you base that assumption on?
-                        </li>
-                        <li>
-                            22:12 [[ user.name ]]: WHAT ASSUMPTION?!!?
-                        </li>
-                        <li>
-                            22:12 [[ user.name ]]: JUST BECAUSE WALLACE AND GROMIT IS ON THE TELLY DOES NOT MEAN ITS TRUE YOU NUTTER...
-                        </li>
-                        <li>
-                            22:20 [[ user.name ]]: You stupid
-                        </li>
-                        <li>
-                            22:30 [[ user.name ]]: I'm so lonely... :'-(
-                        </li>
-                    </ul>
-                </div>
-                <div class="chatsendmessages">
-                    <input type="text" class="typemessage"/>
-                    <button>Send</button>
-                </div>
+                <message-list></message-list>
+                <message-form></message-form>
             </div>
         </div>
         
@@ -157,5 +134,8 @@
     <script src="{% static 'backend/tjota-client.js' %}"></script>
     <script src="{% static 'localStorage/localStoreOps.js' %}"></script>
     <script src="{% static 'app.js' %}"></script>
+    <script src="{% static 'message-form/message-form.directive.js' %}"></script>
+    <script src="{% static 'message-list/message-list.directive.js' %}"></script>
+    <script src="{% static 'message-list/message-item/message-item.directive.js' %}"></script>
   </body>
 </html>
