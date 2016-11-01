@@ -86,6 +86,7 @@
                      session ID to be used for *this* session. The session should be saved in localstorage so it can be used to
                      easily log back in if the browser has not been closed. */
                     function (response) {
+                      console.log("Login response:" + response);
                         session = response.args[0];
 
                       if (loginInfo.length == 1) { // If login was through an old saved sessionID
@@ -132,7 +133,7 @@
                 if ($scope.chat.data.newChat != null) {
                     apps.chat.addchat(
                         $scope.user,
-                        $scope.chat.data.newChat,
+                        $scope.chat.data.newChat,                      
                         function (data) {
                             if (data.success) {
                                 $scope.chat.data.chatrooms.push(data.chatroom);
