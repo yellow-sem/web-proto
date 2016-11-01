@@ -105,14 +105,12 @@
                       
                       $scope.login.hide();
                       $scope.$apply();
-                    }
-                },
-	      function (err) {
-		console.log(err);
-	      }
-            );
-        }
-    };
+                    },
+	          function (err) {
+		    console.log(err);
+	          });
+            }
+        };
                    
         $scope.chat = {
             insertChat: false,
