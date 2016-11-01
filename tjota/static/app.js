@@ -68,6 +68,16 @@
                 $scope.login.data.username = null;
                 $scope.login.data.password = null;
             },
+//            restoreSession: function () {
+//                existingSession = [localStoreOps.getSession()];
+//                
+//                if (existingSession != null) {
+//                    backend.loginWithCredential(
+//                        existingSession,
+//                            
+//                    );
+//                }
+//            },
             submit: function () {
                 // Prepares to send backend login function information, based on if a session already exists.
                 loginInfo = null;
@@ -107,7 +117,7 @@
                       $scope.$apply();
                     },
 	          function (err) {
-		    console.log(err);
+		          console.log(err);
 	          });
             }
         };
