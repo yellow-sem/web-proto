@@ -24,6 +24,7 @@
 
         $scope.user = {
             name: null,
+            status: null,
             provider: null
         };
 
@@ -53,6 +54,8 @@
                 localStoreOps.removeSession();
                 localStoreOps.removeUsername();
                 localStoreOps.removeProvider();
+                
+                $scope.apply();
             }
         };
 
@@ -226,14 +229,8 @@
                 $scope.status.editable = true;
             },
             save: function () {
-                apps.chat.status(
-                    $scope.token,
-                    $scope.user.status,
-                    function (data) {
-                        $scope.status.editable = !data.success;
-                        $scope.$apply();
-                    }
-                );
+                $scope.status.editable = false;
+                $scope.apply();
             },
         };
         
