@@ -186,19 +186,20 @@
                     );
                 }
             },
-            removeChat: function (chatroom) {
-                apps.chat.removechat(
-                    $scope.user,
-                    chatroom,
-                    function (data) {
-                        if (data.success) {
-                            index = $scope.chat.data.chatrooms.indexOf(chatroom);
-                            length = $scope.chat.data.chatrooms.length;
-                            first = $scope.chat.data.chatrooms.slice(0, index);
-                            second = $scope.chat.data.chatrooms.slice(index + 1, length);
-                            $scope.chat.data.chatrooms = first.concat(second);
-                        }
-                        $scope.$apply();
+            leaveRoom: function (chatRoom) {
+                roomid = chatRoom.id;
+                userid = localStoreOps.getSession();
+                
+                // roomid, userid, credentials, success, failure
+                backend.leaveRoom(
+                    roomid,
+                    userid,
+                    userid,
+                    function (response) {
+                        console.log(response);
+                    },
+                    function (err) {
+                        console.log(err);
                     }
                 );
             },

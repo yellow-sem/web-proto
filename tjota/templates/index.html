@@ -118,8 +118,8 @@
                     </div>
                     <div class="chats">
                         <ul class="chatlist">
-                            <li class="chatitem" ng-repeat="room in chat.data.chatrooms">
-                                [[ room ]]<button ng-click="chat.removeChat(room)">&times;</button>
+                            <li class="chatitem" ng-repeat="chatRoom in chat.data.chatrooms">
+                                [[ chatRoom ]]<button ng-click="chat.leaveRoom(chatRoom)">&times;</button>
                             </li>
                         </ul>
                     </div>
