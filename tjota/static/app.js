@@ -34,18 +34,22 @@
 
     app.controller('main', function ($scope, apps) {
 
-        $scope.user = {
-            name: null,
-            status: null,
-            provider: null
-        };
+        /* ########################################
+           REGISTER FUNCTIONS WITH BACKEND LIBRARY
+           ######################################## */
         
         backend.onRoomChange = function (resp) {
             $scope.chat.chatrooms.push({roomid: resp.args[0],
                                        roomname: resp.args[1],
                                        roomtype: resp.args[2]});
             $scope.$apply();
-        }
+        };
+        
+        $scope.user = {
+            name: null,
+            status: null,
+            provider: null
+        };
 
         /*
         LOGOUT COMMANDS
@@ -190,21 +194,28 @@
             
             /* List of messages */
             messages: [{date: 161102,       
-                        user: "default", 
+                        user: "Username", 
                         content: "Hello"}, 
                        {date: 161101,
-                        user: "default",
+                        user: "Username",
                         content: "Hi"},
                        {date: 161031,
-                        user: "default",
-                        content: "bye"},
+                        user: "Username",
+                        content: "Bye"},
                        {date:161030,
-                        user: "default",
+                        user: "Username",
                         content: "Goodbye"}],                   // Messages of the currently selected chat.
             data: {
                 insertChat: false,          // Set to true when you want to create a chat.
                 chatName: null,             // Name of chat to be created.
                 chatType: false             // Type of chat to be created.
+            },
+           
+            messageContent: "",
+            sendMessage: function () {
+                console.log($scope.chat.messageContent);
+                
+                $scope.chat.messageContent = "";
             },
             
             /* Lists all chat rooms. */

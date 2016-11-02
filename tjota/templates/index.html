@@ -130,8 +130,6 @@
             </div>
             <div class="chatview">
                 <div class="messages">
-                    <p> MessageLimit: [[ chat.messageLimit ]] </p>
-                    <br>
                     <ul>
                         <li id="message" ng-repeat="message in chat.messages | limitTo: chat.messageLimit">
                             <span>[[ message.date ]] - [[ message.user ]]: [[ message.content ]]</span>
@@ -139,8 +137,8 @@
                     </ul>
                 </div>
                 <div class="sendmessage">
-                    <input type="text"/>
-                    <button>Send</button>
+                    <input type="text" ng-model="chat.messageContent"/>
+                    <button ng-click="chat.sendMessage()">Send</button>
                 </div>
             </div>
         </div>

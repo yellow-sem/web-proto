@@ -138,6 +138,7 @@ h1 {
     > .chatview {
         width: 70%;
         height: 600px;
+        position: relative;
         display: block;
         color: black;
         background: #D0D7E1;
@@ -150,6 +151,12 @@ h1 {
         > .sendmessage {
             height: 100px;
             background: grey;
+            
+            > input {
+                width: 90%;
+                height: 100%;
+                font-size: 24px;
+            }
         }
     }
 }
@@ -157,6 +164,8 @@ h1 {
 #message {
     list-style-type: none;
     height: 200px;
+    border-bottom: 1px grey dotted;
+    border-top: 1px red dotted;
 }
 
 
