@@ -29,9 +29,9 @@
 
     // Servers responses mapped to function
     this.responseRoutes = {     
-      "room:*": this.onRoomMemberChange.bind(this), // Members in/out
-      "room:self" : this.onRoomChange.bind(this), // new room / removed
-      "msg:recv" : this.onMessageReceived.bind(this), // When the user gets a message
+      "room:*": this.onRoomMemberChange.bind(exports), // Members in/out
+      "room:self" : this.onRoomChange.bind(exports), // new room / removed
+      "msg:recv" : this.onMessageReceived.bind(exports), // When the user gets a message
     }; 
   }
 
@@ -54,18 +54,15 @@
   }
 
   Client.prototype.onRoomMemberChange = function (resp) {
-    console.log("Room Members changed: ");
-    console.log(resp);
+    this.onRoomMemberChange(resp);
   }
 
   Client.prototype.onRoomChange = function (resp) {
-    console.log("Rooom changed: ");
-    console.log(resp);
+    this.onRoomChange(resp);
   }
 
   Client.prototype.onMessageReceived = function (message) {
-    console.log("Message received");
-    console.log(message);
+    this.onMessageReceived(message);
   }
 
   Client.prototype.onmessage = function (event) {
@@ -218,8 +215,18 @@
   exports.leaveRoom = leaveRoom;
   exports.requestMessages = requestMessages;
   exports.sendMessageTo = sendMessageTo;
-  exports.onRoomChange = client.onRoomChange;
-  exports.onRoomMemberChange = client.onRoomMemberChange;
+  exports.onMessageReceived = function (resp) {
+    console.log("On msg recv");
+    console.log(resp);
+  }
+  exports.onRoomChange = function (resp) {
+    console.log("On room change");
+    console.log(resp);
+  }
+  exports.onRoomMemberChange = function (resp) {
+    console.log("On room member change");
+    console.log(resp);
+  }
 
 
   // Exports to window.
