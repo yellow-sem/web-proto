@@ -24,6 +24,7 @@
 
         $scope.user = {
             name: null,
+            status: null,
             provider: null
         };
 
@@ -53,6 +54,8 @@
                 localStoreOps.removeSession();
                 localStoreOps.removeUsername();
                 localStoreOps.removeProvider();
+                
+                $scope.apply();
             }
         };
 
@@ -79,26 +82,32 @@
                 $scope.login.data.username = null;
                 $scope.login.data.password = null;
             },
+            /* Function for restoring a session when user has not closed their web browser, session info
+            is then still stored in window.localStorage. */
             restoreSession: function () {
+                // Retreive the old session.
                 existingSession = localStoreOps.getSession();
                 
+                // If it exists... then
                 if (existingSession != null) {
-                    loginInfo = [existingSession];
-                    
+                    loginInfo = [existingSession];  // Assign information to send to backend.
+                    // Backend function takes: [credentials]_success_failure
                     backend.loginWithSession(
                         loginInfo,
-                        function (response) {
+                        function (response) {   // Success
                             console.log("Successfully restored session!");
                         },
-                        function (err) {
+                        function (err) {        // Failure
                             console.log(err);
                         }
                     );
                 }
             },
+            /* Login function that sends a request to the backend with either an existing session as a credential or
+            username@provider + password. */
             submit: function () {
                 // Prepares to send backend login function information, based on if a session already exists.
-                loginInfo = null;
+                loginInfo = [];
                 existingSession = localStoreOps.getSession();
                 
                 if (existingSession == null) {
@@ -107,34 +116,41 @@
                     loginInfo = [existingSession];
                 }
                 
-                // Backend is the name of the tjota-client, the function called is named login which takes an array as input.
+                // Backend function takes: [credentials]_success_failure
                 backend.loginWithCredential(
                     loginInfo,
                     /* Respose is a dictionary with a session item. Session is an array with the first item being the returned
                      session ID to be used for *this* session. The session should be saved in localstorage so it can be used to
                      easily log back in if the browser has not been closed. */
-                    function (response) {
-                      console.log("Login response:" + response);
+                    function (response) {       // Success
+			console.log("Login response:" + response);
+
                         session = response.args[0];
 
-                        if (loginInfo.length == 1) { // If login was through an old saved sessionID
+                        // If login was through an old saved sessionID
+                        if (loginInfo.length == 1) { 
+                            // Assign user data through window.localStorage.
                             $scope.user.name = localStoreOps.getUsername();
                             $scope.user.provider = localStoreOps.getProvider();
-                        } else { // If login was through GUL credentials
+                        // If login was through GUL credentials
+                        } else {                
+                            // Assign user data through what was provided.
                             userdata = loginInfo[0].split("@");
                             $scope.user.name = userdata[0];
                             $scope.user.provider = userdata[1];
 
+                            /* Store information to be able to resume session without providing credentials again. */
                             localStoreOps.setSession(session);
                             localStoreOps.setUsername(userdata[0]);
                             localStoreOps.setProvider(userdata[1]);
                         }
-                      $scope.chat.listRooms();
-                        
-                      $scope.login.hide();
-                      $scope.$apply();
+                        $scope.user.status = "Just logged in";  // Set status of user.
+                        $scope.chat.listRooms();                // Get all chat rooms of user.  
+
+                        $scope.login.hide();    // Hide login field.
+                        $scope.$apply();        // Apply all changes.
                     },
-                    function (err) {
+                    function (err) {            // Failure
                         console.log(err);
                     }
                 );
@@ -146,46 +162,54 @@
         */
         
         $scope.chat = {
-            chatrooms: [],
+            chatrooms: [],                  // All currently available chat rooms.
             data: {
-                insertChat: false,
-                chatName: null,
-                chatType: false
+                insertChat: false,          // Set to true when you want to create a chat.
+                chatName: null,             // Name of chat to be created.
+                chatType: false             // Type of chat to be created.
             },
+            
+            /* Lists all chat rooms. */
             listRooms: function () {
+                /* Backend function takes: success_failure */
                 backend.listRooms(
-                    function (response) {
+                    function (response) {   // Success
                         console.log(response);
                     },
-                    function (err) {
+                    function (err) {        // Failure
                         console.log(err);
                     }
                 );
             },
+            /* Creates a chat room. */
             createRoom: function () {
-                if ($scope.chat.data.chatName != null) {
+                if ($scope.chat.data.chatName != null) {    // If input chat room name is null, don't create.
                     
+                    /* The chat room type needs to be checked when adding. */
                     roomType = null;
-                    if ($scope.chat.data.chatType) {
+                    if ($scope.chat.data.chatType) {    // ChatType is a boolean bound to a checkbox.
                         roomType = "public";
                     } else {
                         roomType = "private";
                     }
-                    
+                    /* Backend function takes: name_type_success_failure */
                     backend.createRoom(
                         $scope.chat.data.chatName,
                         roomType,
-                        function (response) {
+                        function (response) {   // Success
                             console.log(response);
                         },
-                        function (err) {
+                        function (err) {        // Failure
                             console.log(err);
                         }
                     );
                     $scope.chat.hide();
                     $scope.chat.reset();
+                    
+                    $scope.apply();
                 }
             },
+            /* IN PROGRESS */
             leaveRoom: function (chatRoom) {
                 roomid = chatRoom.id;
                 userid = localStoreOps.getSession();
@@ -222,19 +246,17 @@
         */
         
         $scope.status = {
-            editable: false,
+            editable: false,    // Set var to true if you want to change the status.
+            
+            /* Set Editable to true in order to be able to edit statuses of users.
+            Opens up an input field for text, bound to user.status. */
             edit: function () {
                 $scope.status.editable = true;
             },
+            /* Sets editable back to false to hide input field. */
             save: function () {
-                apps.chat.status(
-                    $scope.token,
-                    $scope.user.status,
-                    function (data) {
-                        $scope.status.editable = !data.success;
-                        $scope.$apply();
-                    }
-                );
+                $scope.status.editable = false;
+                $scope.apply();
             },
         };
         
