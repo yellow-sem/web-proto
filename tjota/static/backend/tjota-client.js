@@ -183,7 +183,7 @@
   function leaveRoom (roomid, userid, credentials, success, failure) {
     command("room:leave", 
             guid(),
-            [roomid, ">>", userid, credentials], 
+            [roomid], 
             success, 
             failure);
   }
@@ -216,12 +216,15 @@
   exports.requestMessages = requestMessages;
   exports.sendMessageTo = sendMessageTo;
   exports.onMessageReceived = function (resp) {
+    console.log("On msg recv");
     console.log(resp);
   }
   exports.onRoomChange = function (resp) {
+    console.log("On room change");
     console.log(resp);
   }
   exports.onRoomMemberChange = function (resp) {
+    console.log("On room member change");
     console.log(resp);
   }
 
