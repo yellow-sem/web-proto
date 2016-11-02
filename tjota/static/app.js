@@ -19,6 +19,18 @@
     app.factory('apps', function () {
         return remote.apps;
     });
+    
+    app.directive("directiveWhenScrolled", function() {
+        return function(scope, elm, attr) {
+            var raw = elm[0];
+
+            elm.bind('scroll', function() {
+                if (raw.scrollTop + raw.offsetHeight >= raw.scrollHeight) {
+                    scope.$apply(attr.directiveWhenScrolled);
+                }
+            });
+        };
+    });
 
     app.controller('main', function ($scope, apps) {
 
@@ -27,6 +39,13 @@
             status: null,
             provider: null
         };
+        
+        backend.onRoomChange = function (resp) {
+            $scope.chat.chatrooms.push({roomid: resp.args[0],
+                                       roomname: resp.args[1],
+                                       roomtype: resp.args[2]});
+            $scope.$apply();
+        }
 
         /*
         LOGOUT COMMANDS
@@ -55,7 +74,7 @@
                 localStoreOps.removeUsername();
                 localStoreOps.removeProvider();
                 
-                $scope.apply();
+                $scope.$apply();
             }
         };
 
@@ -123,7 +142,7 @@
                      session ID to be used for *this* session. The session should be saved in localstorage so it can be used to
                      easily log back in if the browser has not been closed. */
                     function (response) {       // Success
-			console.log("Login response:" + response);
+			             console.log("Login response:" + response);
 
                         session = response.args[0];
 
@@ -163,6 +182,25 @@
         
         $scope.chat = {
             chatrooms: [],                  // All currently available chat rooms.
+            
+            messageLimit: 10,               // Limit of messages shown in the current chat room.
+            loadMoreMessages: function () {
+                $scope.chat.messageLimit += 10;
+            },
+            
+            /* List of messages */
+            messages: [{date: 161102,       
+                        user: "default", 
+                        content: "Hello"}, 
+                       {date: 161101,
+                        user: "default",
+                        content: "Hi"},
+                       {date: 161031,
+                        user: "default",
+                        content: "bye"},
+                       {date:161030,
+                        user: "default",
+                        content: "Goodbye"}],                   // Messages of the currently selected chat.
             data: {
                 insertChat: false,          // Set to true when you want to create a chat.
                 chatName: null,             // Name of chat to be created.
@@ -171,6 +209,7 @@
             
             /* Lists all chat rooms. */
             listRooms: function () {
+                $scope.chat.chatrooms = [];
                 /* Backend function takes: success_failure */
                 backend.listRooms(
                     function (response) {   // Success
@@ -206,19 +245,23 @@
                     $scope.chat.hide();
                     $scope.chat.reset();
                     
-                    $scope.apply();
+                    $scope.$apply();
                 }
             },
             /* IN PROGRESS */
-            leaveRoom: function (chatRoom) {
-                roomid = chatRoom.id;
-                userid = localStoreOps.getSession();
+            leaveRoom: function (room) {
+                index = $scope.chat.chatrooms.indexOf(room);
+                firsthalf = $scope.chat.chatrooms.slice(0, index);
+                secondhalf = $scope.chat.chatrooms.slice(index + 1, $scope.chat.chatrooms.length);
                 
+                $scope.chat.chatrooms = firsthalf.concat(secondhalf);
+                
+                credentials = localStoreOps.getUsername() + "@" + localStoreOps.getProvider();
                 // roomid, userid, credentials, success, failure
                 backend.leaveRoom(
-                    roomid,
-                    userid,
-                    userid,
+                    room.roomid,
+                    localStoreOps.getSession(),
+                    credentials,
                     function (response) {
                         console.log(response);
                     },
@@ -226,6 +269,8 @@
                         console.log(err);
                     }
                 );
+                
+                //$scope.$apply();
             },
             show: function () {
                 $scope.chat.data.insertChat = true;
@@ -240,7 +285,7 @@
                 $scope.chat.data.chatType = false;
             },
         };
-
+        
         /**
         STATUS COMMANDS
         */
@@ -256,7 +301,6 @@
             /* Sets editable back to false to hide input field. */
             save: function () {
                 $scope.status.editable = false;
-                $scope.apply();
             },
         };
         

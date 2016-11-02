@@ -183,7 +183,7 @@
   function leaveRoom (roomid, userid, credentials, success, failure) {
     command("room:leave", 
             guid(),
-            [roomid, ">>", userid, credentials], 
+            [roomid], 
             success, 
             failure);
   }

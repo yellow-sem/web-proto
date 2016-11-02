@@ -137,38 +137,26 @@ h1 {
     
     > .chatview {
         width: 70%;
-        height: 100%;
+        height: 600px;
         display: block;
         color: black;
         background: #D0D7E1;
         
-        > .chatmessages {
-            height: 85%;
-            
-            > .chatmessage {
-                list-style-type: none;
-            }
+        > .messages {
+            overflow: auto;
+            height: 500px;
         }
         
-        > .chatsendmessages {
-            height: 15%;
-            
-            > .typemessage {
-                width: 90%;
-                height: 100%;
-                border-radius: 5px;
-            }
-            
-            > button {
-                width: 9.5%;
-                height: 100%;
-                border-radius: 5px;
-                font-size: 25px;
-                font-weight: bold;
-                color: white;
-            }
+        > .sendmessage {
+            height: 100px;
+            background: grey;
         }
     }
+}
+
+#message {
+    list-style-type: none;
+    height: 200px;
 }
 
 
