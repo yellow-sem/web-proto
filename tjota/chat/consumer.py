@@ -38,6 +38,7 @@ class ChatBackendClient(object):
             exit, data = self.send_queue.get()
 
             if data:
+                data = data + "\n"
                 data = data.encode()
                 print('(send) >> {}'.format(data))
                 self.socket.send(data)
@@ -67,8 +68,9 @@ class ChatWebsocketConsumer(WebsocketConsumer):
 
     def connect(self, message, **kwargs):
         global client
-        client = ChatBackendClient(lambda data: self.send(text=data))
-        client.start()
+        if client is None:            
+            client = ChatBackendClient(lambda data: self.send(text=data))
+            client.start()
 
     def receive(self, text=None, bytes=None, **kwargs):
         global client
@@ -76,4 +78,5 @@ class ChatWebsocketConsumer(WebsocketConsumer):
 
     def disconnect(self, message, **kwargs):
         global client
-        client.stop()
+        if client is not None:
+            client.stop()

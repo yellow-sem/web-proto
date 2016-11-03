@@ -93,13 +93,6 @@
     this.socket.send(this.formatRequest([Command, Id, Args]));
   }
 
-  Client.prototype.registerCallback = function (Function) {
-    // Shoud never be any duplicates....
-    var id = guid();    
-    this.callbacks[id] = Function;
-    return id;
-  }
-
   Client.prototype.registerCallback = function (id, Function) {
     // Shoud never be any duplicates....
     this.callbacks[id] = Function;
@@ -162,8 +155,8 @@
             failure);
   }
 
-  // [roomid] << [userid] [usercredentials]
-  function joinRoom (roomid, userid, credentials, success, failure) {
+  // [roomid] 
+  function joinRoom (roomid, success, failure) {
     command("room:join",
             guid(),
             [roomid, "<<", userid, credentials], 
