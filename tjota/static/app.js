@@ -42,6 +42,7 @@
             $scope.chat.chatrooms.push({roomid: resp.args[0],
                                        roomname: resp.args[1],
                                        roomtype: resp.args[2]});
+            console.log(resp);
             $scope.$apply();
         };
         
@@ -77,8 +78,6 @@
                 localStoreOps.removeSession();
                 localStoreOps.removeUsername();
                 localStoreOps.removeProvider();
-                
-                $scope.$apply();
             }
         };
 
@@ -146,7 +145,7 @@
                      session ID to be used for *this* session. The session should be saved in localstorage so it can be used to
                      easily log back in if the browser has not been closed. */
                     function (response) {       // Success
-			             console.log("Login response:" + response);
+                        console.log("Login response:" + response);
 
                         session = response.args[0];
 
@@ -255,8 +254,6 @@
                     );
                     $scope.chat.hide();
                     $scope.chat.reset();
-                    
-                    $scope.$apply();
                 }
             },
             /* IN PROGRESS */
