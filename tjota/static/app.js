@@ -20,15 +20,16 @@
         return remote.apps;
     });
     
+    
+    /* Triggers when scrolled! Add limiters. */
     app.directive("directiveWhenScrolled", function() {
-        return function(scope, elm, attr) {
-            var raw = elm[0];
-
-            elm.bind('scroll', function() {
-                if (raw.scrollTop + raw.offsetHeight >= raw.scrollHeight) {
-                    scope.$apply(attr.directiveWhenScrolled);
-                }
-            });
+        return function(scope, element, attributes) {
+            var raw = element[0];
+            
+            element.bind('scroll', function () {
+                console.log("its alive!");
+                scope.$apply(attributes.directiveWhenScrolled);
+            })
         };
     });
 
@@ -219,7 +220,7 @@
             
             /* Lists all chat rooms. */
             listRooms: function () {
-                $scope.chat.chatrooms = [];
+                $scope.chat.chatrooms = []; 
                 /* Backend function takes: success_failure */
                 backend.listRooms(
                     function (response) {   // Success
@@ -230,6 +231,14 @@
                     }
                 );
             },
+            
+            selectionSortRooms: function () {
+                
+            },
+            
+            /* List members by sending list:rooms with the room-ID! */
+            
+            
             /* Creates a chat room. */
             createRoom: function () {
                 if ($scope.chat.data.chatName != null) {    // If input chat room name is null, don't create.

@@ -44,6 +44,12 @@ window.localStoreOps = (function () {
         return window.localStorage.removeItem("provider");
     }
     
+    /* FLUSH LOCALSTORAGE */
+    
+    function clear () {
+        return window.localStorage.clear();
+    }
+    
     exports.setSession = setSession;
     exports.getSession = getSession;
     exports.removeSession = removeSession;
@@ -55,6 +61,8 @@ window.localStoreOps = (function () {
     exports.setProvider = setProvider;
     exports.getProvider = getProvider;
     exports.removeProvider = removeProvider;
+    
+    exports.clear = clear;
     
     return exports;
 })();
