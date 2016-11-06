@@ -31,6 +31,7 @@
   }
 
   function escapeSingleQuote(str) {
+    console.log("escaping, " + str);
     return str.replace(/\'/g, "\'");
   }
 
@@ -107,11 +108,7 @@
   }
 
   Client.prototype.formatRequest = function(Args) {
-    let NewArgs = [];
-    for (let i = 0; i<Args.length; i++) {
-      NewArgs.push(escapeSingleQuote(Args[i]));
-    }
-    return Array.prototype.concat.apply([], NewArgs).join(" ");
+    return escapeSingleQuote(Array.prototype.concat.apply([], Args).join(" "));
   }
 
   Client.prototype.send = function (Command, Id, Args) {
