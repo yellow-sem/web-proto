@@ -30,6 +30,14 @@
     return formatted
   }
 
+  function escapeSingleQuote(str) {
+    return str.replace(/\'/g, "\'");
+  }
+
+  function unescapeSingleQuote(str) {
+    return str.replace(/\\\'/g, "'");
+  }
+
 /********************************
 * Client API Object
 * This is the client to the server backend. 
@@ -37,7 +45,7 @@
 *********************************/  
 
   var Client = function() {
-    this.socket = new WebSocket('ws://localhost:8080/');
+    this.socket = new WebSocket('ws://' + location.hostname + ':8080/');
     this.connected = false;
     this.socket.onopen = this.onopen.bind(this);
     this.socket.onmessage = this.onmessage.bind(this);
@@ -101,9 +109,9 @@
   Client.prototype.formatRequest = function(Args) {
     let NewArgs = [];
     for (let i = 0; i<Args.length; i++) {
-      
+      NewArgs.push(escapeSingleQuote(Args[i]));
     }
-    return Array.prototype.concat.apply([], Args).join(" ");
+    return Array.prototype.concat.apply([], NewArgs).join(" ");
   }
 
   Client.prototype.send = function (Command, Id, Args) {
@@ -211,7 +219,6 @@
             failure);
   }
 
-  // sendMessageTo (roomid, messagecontent, success, failure)
   function sendMessageTo (to, message, success, failure) { 
     command("msg:send", 
             guid(),
