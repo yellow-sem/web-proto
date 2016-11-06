@@ -211,6 +211,7 @@
             failure);
   }
 
+  // sendMessageTo (roomid, messagecontent, success, failure)
   function sendMessageTo (to, message, success, failure) { 
     command("msg:send", 
             guid(),

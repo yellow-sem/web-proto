@@ -54,6 +54,21 @@
             $scope.$apply();
         }
         
+        // Resp = args[] with: 
+        // 0: Roomid
+        // 1: when?
+        // 2: userid
+        // 3: username@provider
+        // 4: messagecontent
+        backend.onMessageReceived = function (resp) {
+            // Check if the message received if from the currently selected room.
+            if ($scope.chat.activeChatroom.roomid == resp.args[0]) {
+                // Push message to messages array.
+                $scope.chat.messages.push(
+                    resp.args[1] + " " + resp.args[3] + ": " + resp.args[4]);
+            }
+        };
+        
         /* ########################################
            REGISTER FUNCTIONS WITH BACKEND LIBRARY
            ######################################## */
@@ -279,9 +294,24 @@
             activeChatroom: null,
             // Function for what happens when a chatroom is clicked. Takes the chatroom clicked as param.
             selectChatroom: function (chatroom) {
-                // Set the active chat to
+                // Empty the list of messages.
+                $scope.chat.messages = [];
+                
+                // Reset message limit.
+                $scope.chat.messageLimit = 10;
+                
+                // Set the active chat to selected chatroom.
                 $scope.chat.activeChatroom = chatroom;
-                console.log("Active Chatroom: " + chatroom.roomname);
+                
+                // List message history of the chat.
+                backend.requestMessages(
+                    function (response) {
+                        console.log(response);
+                    },
+                    function (err) {
+                        console.log(err);
+                    }
+                );
                 
                 // Get all members of the selected chat.
                 $scope.chat.listRoomMembers(chatroom.roomid);
@@ -304,19 +334,7 @@
             },
             
             // Messages in the currently selected chat, see Var. activeChatroom.
-            messages: [{date: 161102,       
-                        user: "Username", 
-                        content: "Hello"}, 
-                       {date: 161101,
-                        user: "Username",
-                        content: "Hi"},
-                       {date: 161031,
-                        user: "Username",
-                        content: "Bye"},
-                       {date:161030,
-                        user: "Username",
-                        content: "Goodbye"}],
-            
+            messages: [],
             // Limit of messages shown in the current chat room.
             messageLimit: 10,
             // When scrolled up to top limit, allow more messages to be shown.
@@ -329,6 +347,18 @@
             // Send message and reset the message content to nothing.
             sendMessage: function () {
                 console.log($scope.chat.messageContent);
+                
+                // sendMessageTo (roomid, messagecontent, success, failure)
+                backend.sendMessageTo(
+                    $scope.chat.activeChatroom.roomid,
+                    $scope.chat.messageContent,
+                    function (response) {
+                        console.log(response);
+                    },
+                    function (err) {
+                        console.log(err);
+                    }
+                );
                 
                 $scope.chat.messageContent = "";
             },
