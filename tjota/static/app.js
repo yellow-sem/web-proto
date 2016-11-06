@@ -47,6 +47,11 @@
             $scope.$apply();
         };
         
+        backend.onRoomMemberChange = function (resp) {
+            console.log(resp);
+            //$scope.chat.chatroomMembers.push()
+        }
+        
         /* ########################################
            REGISTER FUNCTIONS WITH BACKEND LIBRARY
            ######################################## */
