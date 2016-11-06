@@ -39,6 +39,12 @@
            REGISTERED FUNCTIONS WITH BACKEND LIBRARY
            ######################################## */
         
+        backend.onOpen = function (resp) {
+            if (resp) {
+                $scope.login.restoreSession();
+            }
+        }
+        
         backend.onRoomChange = function (resp) {
             // If a new room was recently created, the incoming room is most likely the room that was created, join it! :-)
             if ($scope.chat.roomCreated) {
@@ -65,25 +71,26 @@
         };
         
         backend.onRoomMemberChange = function (resp) {
-            var activeChatroom = $scope.chat.activeChatroom.roomid;
             var change = resp.args[1];          // << or >> join or leave.
             
-            if (activeChatroom != null && activeChatroom == resp.args[0]) {
-                if (change == '<<') {           // joined room
-                    $scope.chat.chatroomMembers.push(resp.args[3]);
-                    
-                    console.log(resp.args[3] + " joined.");
-                    
-                    $scope.$apply();
-                } else if (change == '>>') {    // left rooom
-                    index = $scope.chat.chatroomMembers.indexOf(resp.args[3]);
-                    if (index > -1) {
-                        $scope.chat.chatroomMembers.splice(index, 1);
+            if ($scope.chat.activeChatroom != null) {
+                if ($scope.chat.activeChatroom.roomid == resp.args[0]) {
+                    if (change == '<<') {           // joined room
+                        $scope.chat.chatroomMembers.push(resp.args[3]);
+
+                        console.log(resp.args[3] + " joined.");
+
+                        $scope.$apply();
+                    } else if (change == '>>') {    // left rooom
+                        index = $scope.chat.chatroomMembers.indexOf(resp.args[3]);
+                        if (index > -1) {
+                            $scope.chat.chatroomMembers.splice(index, 1);
+                        }
+
+                        console.log(resp.args[3] + " left.");
+
+                        $scope.$apply();
                     }
-                    
-                    console.log(resp.args[3] + " left.");
-                    
-                    $scope.$apply();
                 }
             }
         }
@@ -184,6 +191,8 @@
                             backend.discoverRooms(
                                 function () {},
                                 function () {});
+                            
+                            $scope.chat.listRooms();
                             
                             // Assign user data through window.localStorage.
                             $scope.user.name = localStoreOps.getUsername();
@@ -334,7 +343,7 @@
                     localStoreOps.getSession(),
                     credentials,
                     function (response) {
-                        console.log(response);
+                        console.log("Left room successfully.");
                         
                         index = $scope.chat.chatrooms.indexOf(room);
                         firsthalf = $scope.chat.chatrooms.slice(0, index);
@@ -354,7 +363,7 @@
                         $scope.$apply();
                     },
                     function (err) {
-                        console.log(err);
+                        console.log("Could not leave room due to error.");
                     }
                 );
                 
@@ -367,10 +376,10 @@
                 /* Backend function takes: success_failure */
                 backend.listRooms(
                     function (response) {   // Success
-                        console.log(response);
+                        console.log("Listing rooms...");
                     },
                     function (err) {        // Failure
-                        console.log(err);
+                        console.log("Error listing rooms.");
                     }
                 );
             },
