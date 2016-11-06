@@ -134,7 +134,10 @@
                     <div class="chats">
                         <ul class="chatlist">
                             <li class="chatitem" ng-repeat="chatroom in chat.chatrooms | orderBy: 'roomname'">
-                                <p ng-click="chat.selectChatroom(chatroom)">[[ chatroom.roomname ]] <button ng-click="chat.leaveRoom(chatroom)">&times;</button></p>
+                                <p ng-click="chat.selectChatroom(chatroom)">
+                                    [[ chatroom.roomname ]] 
+                                    <button ng-click="chat.leaveRoom(chatroom)">&times;</button>
+                                </p>
                             </li>
                         </ul>
                     </div>
@@ -146,7 +149,7 @@
                         Message limit: [[ chat.messageLimit ]]
                         <ul>
                             <li id="msg" ng-repeat="message in chat.messages">
-                                [[ message.date | date:'yyyy-MM-dd HH:mm' ]] [[ message.user ]]: [[ message.content ]]
+                                <p> [[ message.date | date:'yyyy-MM-dd HH:mm' ]] [[ message.user ]]: [[ message.content ]] </p>
                             </li>
                         </ul>
                     </div>
@@ -158,9 +161,9 @@
                         </ul>
                     </div>
                 </div>
-                <div class="sendmessage">
+                <div class="sendmessage" ng-keyup="chat.enterSendMessage($event)">
                     <input type="text" ng-model="chat.messageContent"/>
-                    <button ng-click="chat.sendMessage()">Send</button>
+                    <button ng-click="chat.clickSendMessage()">Send</button>
                 </div>
             </div>
         </div>

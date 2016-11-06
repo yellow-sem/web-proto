@@ -65,9 +65,10 @@
         };
         
         backend.onRoomMemberChange = function (resp) {
+            var activeChatroom = $scope.chat.activeChatroom.roomid;
             var change = resp.args[1];          // << or >> join or leave.
             
-            if ($scope.chat.activeChatroom.roomid == resp.args[0]) {
+            if (activeChatroom != null && activeChatroom == resp.args[0]) {
                 if (change == '<<') {           // joined room
                     $scope.chat.chatroomMembers.push(resp.args[3]);
                     
@@ -433,9 +434,26 @@
             // Content of a message to send.
             messageContent: "",
             // Send message and reset the message content to nothing.
-            sendMessage: function () {
-                console.log($scope.chat.messageContent);
+            enterSendMessage: function ($event) {
+                if ($event.keyCode == 13) {
                 
+                    // sendMessageTo (roomid, messagecontent, success, failure)
+                    backend.sendMessageTo(
+                        $scope.chat.activeChatroom.roomid,
+                        $scope.chat.messageContent,
+                        function (response) {
+                            console.log(response);
+                        },
+                        function (err) {
+                            console.log(err);
+                        }
+                    );
+                    
+                    $scope.chat.messageContent = "";
+                }
+            },
+            
+            clickSendMessage: function () {
                 // sendMessageTo (roomid, messagecontent, success, failure)
                 backend.sendMessageTo(
                     $scope.chat.activeChatroom.roomid,
