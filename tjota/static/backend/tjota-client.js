@@ -107,7 +107,7 @@
   }
 
   Client.prototype.formatRequest = function(Args) {
-    return escapeSingleQuote(Array.prototype.concat.apply([], Args).join(" ")) + "\n";
+    return Array.prototype.concat.apply([], Args).join(" ") + "\n";
   }
 
   Client.prototype.send = function (Command, Id, Args) {
@@ -176,7 +176,7 @@
   function createRoom (name, type, success, failure) {
     command("room:create", 
             guid(),
-            ["'" + name + "'", type], 
+            ["'" + escapeSingleQuote(name) + "'", type], 
             success, 
             failure);
   }
@@ -184,7 +184,7 @@
   function createRoomWithDirectOrBot (name, type, extra, success, failure) {
     command("room:create",
             guid(),
-            ["'" + name + "'", type, "'" + extra + "'"],
+            ["'" + escapeSingleQuote(name) + "'", type, "'" + escapeSingleQuote(extra) + "'"],
             success,
             failure);
   }
@@ -218,7 +218,7 @@
   function sendMessageTo (to, message, success, failure) { 
     command("msg:send", 
             guid(),
-            [to, "'" + message + "'"], 
+            [to, "'" + escapeSingleQuote(message) + "'"], 
             success, 
             failure);
   }
@@ -228,7 +228,7 @@
   }
 
   function setStatus(string, success, failure) {
-    command("status:set", guid(), ["'" + string + "'"], success, failure);
+    command("status:set", guid(), ["'" + escapeSingleQuote(string) + "'"], success, failure);
   }
 
   function requestStatuses(success, failure) {
