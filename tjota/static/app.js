@@ -272,16 +272,22 @@
                 console.log("Active Chatroom: " + chatroom.roomname);
                 
                 // Get all members of the selected chat.
-                $scope.chat.listMembers(chatroom.roomid);
+                $scope.chat.listRoomMembers(chatroom.roomid);
             },
             
             // List of all members of currently selected chatroom, see Var. activeChatroom.
             chatroomMembers: ["Adam", "Eve", "God", "The Snake", "Satan"],
             /* List members by sending list:rooms with the room-ID! */
-            listMembers: function (roomID) {
+            listRoomMembers: function (roomID) {
                 // Send backend call and listen for members sent as response.
-                backend.listRooms(
-                    
+                backend.listRoomMembers(
+                    roomID,
+                    function (response) {
+                        console.log(response);
+                    },
+                    function (err) {
+                        console.log(err);
+                    }
                 );
             },
             
