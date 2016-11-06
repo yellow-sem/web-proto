@@ -218,6 +218,7 @@
   exports.leaveRoom = leaveRoom;
   exports.joinRoom = joinRoom;
   exports.listRooms = listRooms;
+  exports.listRoomMembers = listRoomMembers;
   exports.leaveRoom = leaveRoom;
   exports.requestMessages = requestMessages;
   exports.sendMessageTo = sendMessageTo;

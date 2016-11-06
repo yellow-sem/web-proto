@@ -48,8 +48,10 @@
         };
         
         backend.onRoomMemberChange = function (resp) {
+            $scope.chat.chatroomMembers.push(resp.args[3]);
+            
             console.log(resp);
-            //$scope.chat.chatroomMembers.push()
+            $scope.$apply();
         }
         
         /* ########################################
@@ -286,7 +288,7 @@
             },
             
             // List of all members of currently selected chatroom, see Var. activeChatroom.
-            chatroomMembers: ["Adam", "Eve", "God", "The Snake", "Satan"],
+            chatroomMembers: [],
             /* List members by sending list:rooms with the room-ID! */
             listRoomMembers: function (roomID) {
                 // Send backend call and listen for members sent as response.
