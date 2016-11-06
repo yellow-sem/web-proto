@@ -47,6 +47,10 @@
             $scope.$apply();
         };
         
+        /* ########################################
+           REGISTER FUNCTIONS WITH BACKEND LIBRARY
+           ######################################## */
+        
         $scope.user = {
             name: null,
             status: null,
@@ -186,29 +190,11 @@
         
         $scope.chat = {
             chatrooms: [],                  // All currently available chat rooms.
-            activeChatroom: null,
             
-            selectChatroom: function (chatroom) {
-                $scope.chat.activeChatroom = chatroom;
-            },
-            
-            /* Lists all chat rooms. */
-            listRooms: function () {
-                $scope.chat.chatrooms = []; 
-                /* Backend function takes: success_failure */
-                backend.listRooms(
-                    function (response) {   // Success
-                        console.log(response);
-                    },
-                    function (err) {        // Failure
-                        console.log(err);
-                    }
-                );
-            },
-            
-            /* List members by sending list:rooms with the room-ID! */
-            listMembers: function (roomID) {
-                
+            data: {
+                insertChat: false,          // Set to true when you want to create a chat.
+                chatName: null,             // Name of chat to be created.
+                chatType: false             // Type of chat to be created.
             },
             
             /* Creates a chat room. */
@@ -263,12 +249,43 @@
                 //$scope.$apply();
             },
             
-            messageLimit: 10,               // Limit of messages shown in the current chat room.
-            loadMoreMessages: function () {
-                $scope.chat.messageLimit += 10;
+            /* Lists all chat rooms. */
+            listRooms: function () {
+                $scope.chat.chatrooms = []; 
+                /* Backend function takes: success_failure */
+                backend.listRooms(
+                    function (response) {   // Success
+                        console.log(response);
+                    },
+                    function (err) {        // Failure
+                        console.log(err);
+                    }
+                );
             },
             
-            /* List of messages */
+            // Var. for the currently active chatroom.
+            activeChatroom: null,
+            // Function for what happens when a chatroom is clicked. Takes the chatroom clicked as param.
+            selectChatroom: function (chatroom) {
+                // Set the active chat to
+                $scope.chat.activeChatroom = chatroom;
+                console.log("Active Chatroom: " + chatroom.roomname);
+                
+                // Get all members of the selected chat.
+                $scope.chat.listMembers(chatroom.roomid);
+            },
+            
+            // List of all members of currently selected chatroom, see Var. activeChatroom.
+            chatroomMembers: [],
+            /* List members by sending list:rooms with the room-ID! */
+            listMembers: function (roomID) {
+                // Send backend call and listen for members sent as response.
+                backend.listRooms(
+                    
+                );
+            },
+            
+            // Messages in the currently selected chat, see Var. activeChatroom.
             messages: [{date: 161102,       
                         user: "Username", 
                         content: "Hello"}, 
@@ -280,22 +297,25 @@
                         content: "Bye"},
                        {date:161030,
                         user: "Username",
-                        content: "Goodbye"}],                   // Messages of the currently selected chat.
+                        content: "Goodbye"}],
             
+            // Limit of messages shown in the current chat room.
+            messageLimit: 10,
+            // When scrolled up to top limit, allow more messages to be shown.
+            loadMoreMessages: function () {
+                $scope.chat.messageLimit += 10;
+            },
+            
+            // Content of a message to send.
             messageContent: "",
+            // Send message and reset the message content to nothing.
             sendMessage: function () {
                 console.log($scope.chat.messageContent);
                 
                 $scope.chat.messageContent = "";
             },
             
-            data: {
-                insertChat: false,          // Set to true when you want to create a chat.
-                chatName: null,             // Name of chat to be created.
-                chatType: false             // Type of chat to be created.
-            },
-            
-            /* Bullshit UI function */
+            /* Bullshit UI functions */
             
             show: function () {
                 $scope.chat.data.insertChat = true;
