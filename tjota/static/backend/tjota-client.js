@@ -19,7 +19,7 @@
       "args": []
     };
     // Regex for a response
-    var data = resp.match(/('(.+?)'|[A-Za-z0-9\w\:\-\*<<\@]+)/g);
+    var data = resp.match(/('(.+?)'|[A-Za-z0-9\w\:\-\*<<>>\@]+)/g);
     formatted["command"] = data[0];
     formatted["id"] = data[1];
     var argsData = data.splice(2, data.length);
