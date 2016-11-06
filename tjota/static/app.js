@@ -47,29 +47,40 @@
            ######################################## */
         
         backend.onRoomChange = function (resp) {
-            $scope.chat.chatrooms.push({roomid: resp.args[0],
-                                       roomname: resp.args[1],
-                                       roomtype: resp.args[2]});
+            if ($scope.chat.roomCreated) {
+                $scope.chat.activeChatroom = {
+                    roomid: resp.args[0],
+                    roomname: resp.args[1],
+                    roomtype: resp.args[2]
+                };
+                $scope.chat.roomCreated = false;
+            }
+            $scope.chat.chatrooms.push({
+                roomid: resp.args[0],
+                roomname: resp.args[1],
+                roomtype: resp.args[2]
+            });
             console.log(resp);
             $scope.$apply();
         };
         
         backend.onRoomMemberChange = function (resp) {
-            var change = resp.args[1]; // << or >> join or leave.
-            console.log("Room member change, ");
-
-            if (change == '<<') { // joined room
-                $scope.chat.chatroomMembers.push(resp.args[3]);            
-                console.log(resp.args[3] + " joined.");  
-                $scope.$apply();
-            } else if (change == '>>') { // left rooom
-                index = $scope.chat.chatroomMembers.indexOf(resp.args[3]);
-                console.log(resp.args[3] + " left.");  
-                if (index > -1) {
-                    $scope.chat.chatroomMembers.splice(index, 1);
+            var change = resp.args[1];          // << or >> join or leave.
+            
+            if ($scope.chat.activeChatroom.roomid == resp.args[0]) {
+                if (change == '<<') {           // joined room
+                    $scope.chat.chatroomMembers.push(resp.args[3]);
+                    console.log(resp.args[3] + " joined.");
                     $scope.$apply();
+                } else if (change == '>>') {    // left rooom
+                    index = $scope.chat.chatroomMembers.indexOf(resp.args[3]);
+                    console.log(resp.args[3] + " left.");
+                    if (index > -1) {
+                        $scope.chat.chatroomMembers.splice(index, 1);
+                        $scope.$apply();
+                }
             }
-}
+        }
           
 
         }
@@ -239,40 +250,54 @@
             chatrooms: [],                  // All currently available chat rooms.
             
             data: {
+                chatTypes: [{name: "Public", id: "public"},
+                          {name: "Private", id: "private"},
+                          {name: "Direct", id: "direct"},
+                          {name: "Bot", id: "bot"}],
                 insertChat: false,          // Set to true when you want to create a chat.
                 chatName: null,             // Name of chat to be created.
-                chatType: false             // Type of chat to be created.
+                chatType: false,             // Type of chat to be created.
+                extraField: null
             },
             
+            // For entering a new room once its created.
+            roomCreated: false,
             /* Creates a chat room. */
             createRoom: function () {
-              data = $scope.chat.data;
+                data = $scope.chat.data;
                 if (data.chatName != null) {    // If input chat room name is null, don't create.                                     
-
-                  if (data.chatType === 'direct' || 'bot') {
-                    backend.createRoomWithDirectOrBot(data.chatName,
-                                                      data.chatType,
-                                                      data.extra,
-                                                      function (resp) {
-                                                        console.log(resp);
-                                                      },
-                                                      function (err) {
-                                                        console.log(err);
-                                                      });
-                  } else {
-                    backend.createRoom(
-                        data.chatName,
-                        data.chatType,
-                        function (response) {   // Success
-                            console.log(response);
-                        },
-                        function (err) {        // Failure
-                            console.log(err);
-                        }
-                    );
-                  }
+                    
+                    // A room has been created, 
+                    $scope.chat.roomCreated = true;
+                    
+                    if (data.chatType === 'direct' || 'bot') {
+                        backend.createRoomWithDirectOrBot(
+                            data.chatName,
+                            data.chatType,
+                            data.extraField,
+                            function (resp) {
+                                console.log(resp);
+                            },
+                            function (err) {
+                                console.log(err);
+                                $scope.chat.roomCreated = false;    // Error, listener for new rooms will  not trigger.
+                            }
+                        );
+                    } else {
+                        backend.createRoom(
+                            data.chatName,
+                            data.chatType,
+                            function (response) {   // Success
+                                console.log(response);
+                            },
+                            function (err) {        // Failure
+                                console.log(err);
+                                $scope.chat.roomCreated = false;    // Error, listener for new rooms will  not trigger.
+                            }
+                        );
+                    }
                     $scope.chat.hide();
-                    $scope.chat.reset();                    
+                    $scope.chat.reset();
                 }
             },
             
@@ -390,17 +415,6 @@
                 );
                 
                 $scope.chat.messageContent = "";
-            },
-            
-            data: {
-              chatTypes: [{name: "Public", id: "public"},
-                          {name: "Private", id: "private"},
-                          {name: "Direct", id: "direct"},
-                          {name: "Bot", id: "bot"}],
-                insertChat: false,          // Set to true when you want to create a chat.
-                chatName: null,             // Name of chat to be created.
-                chatType: false,             // Type of chat to be created.
-              extraField: null
             },
             
             show: function () {
