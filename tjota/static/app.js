@@ -63,10 +63,12 @@
         backend.onMessageReceived = function (resp) {
             // Check if the message received if from the currently selected room.
             if ($scope.chat.activeChatroom.roomid == resp.args[0]) {
+                console.log(resp);
                 // Push message to messages array.
-                $scope.chat.messages.push(
-                    resp.args[1] + " " + resp.args[3] + ": " + resp.args[4]);
+                $scope.chat.messages.push({user: resp.args[3],
+                                            content: resp.args[4]});
             }
+            $scope.$apply();
         };
         
         /* ########################################
@@ -305,6 +307,7 @@
                 
                 // List message history of the chat.
                 backend.requestMessages(
+                    $scope.chat.activeChatroom.roomid,
                     function (response) {
                         console.log(response);
                     },
