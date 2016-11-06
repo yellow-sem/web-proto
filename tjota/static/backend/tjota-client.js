@@ -215,8 +215,8 @@
             failure);
   }
 
-  function requestMessages (success, failure) {
-    command("msg:req", guid(), [], success, failure);
+  function requestMessages (roomid, success, failure) {
+    command("msg:req", guid(), [roomid], success, failure);
   }
 
   function setStatus(string, success, failure) {
