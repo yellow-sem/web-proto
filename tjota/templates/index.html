@@ -108,21 +108,21 @@
                         <div ng-show="chat.data.insertChat">
                             
                             <form ng-submit="chat.createRoom()">
-                              <div>
-                                <label> Room name </label>
-                                <input type="text" ng-model="chat.data.chatName"/>     
-                              </div>
                                 <div>
-                                  <label> Room Type </label>
-                                  <select ng-model="chat.data.chatType">
-                                    <option ng-repeat="option in chat.data.chatTypes" value="[[option.id]]">[[option.name]]</option>
-                                  </select>
+                                    <label> Room name </label>
+                                    <input type="text" ng-model="chat.data.chatName"/>     
+                                </div>
+                                <div>
+                                    <label> Room Type </label>
+                                    <select ng-model="chat.data.chatType">
+                                        <option ng-repeat="option in chat.data.chatTypes" value="[[option.id]]">[[option.name]]</option>
+                                    </select>
                                 </div>
                                 <div ng-if="chat.data.chatType === 'direct' || chat.data.chatType === 'bot'">
-                                  <label ng-if="chat.data.chatType === 'direct'">user@provdider</label>
-                                  <label ng-if="chat.data.chatType === 'bot'">provder://provider</label>
-                                  <input type="textfield" ng-if="chat.data.chatType === 'direct'" ng-model="chat.data.extraField"></input>
-                                  <input type="textfield" ng-if="chat.data.chatType === 'bot'" ng-model="chat.data.extraField"></input>
+                                      <label ng-if="chat.data.chatType === 'direct'">user@provdider</label>
+                                      <label ng-if="chat.data.chatType === 'bot'">provder://provider</label>
+                                      <input type="textfield" ng-if="chat.data.chatType === 'direct'" ng-model="chat.data.extraField"></input>
+                                      <input type="textfield" ng-if="chat.data.chatType === 'bot'" ng-model="chat.data.extraField"></input>
                                 </div>
                                 <button>Save room</button>
                             </form>
@@ -165,8 +165,7 @@
                 </div>
             </div>
         </div>
-        
-    </div>
+    </div>  
     <script src="{% static 'angular.min.js' %}"></script>
     <script src="{% static 'angular-cookies.min.js' %}"></script>
     <script src="{% static 'angular-route.min.js' %}"></script>
@@ -174,8 +173,5 @@
     <script src="{% static 'backend/tjota-client.js' %}"></script>
     <script src="{% static 'localStorage/localStoreOps.js' %}"></script>
     <script src="{% static 'app.js' %}"></script>
-    <script src="{% static 'message-form/message-form.directive.js' %}"></script>
-    <script src="{% static 'message-list/message-list.directive.js' %}"></script>
-    <script src="{% static 'message-list/message-item/message-item.directive.js' %}"></script>
   </body>
 </html>
