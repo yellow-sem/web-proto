@@ -50,7 +50,7 @@
         backend.onRoomMemberChange = function (resp) {
             $scope.chat.chatroomMembers.push(resp.args[3]);
             
-            console.log(resp);
+            console.log(resp.args[3] + " joined.");
             $scope.$apply();
         }
         
@@ -315,6 +315,9 @@
                         console.log(err);
                     }
                 );
+                
+                // Empty current list of room members.
+                $scope.chat.chatroomMembers = [];
                 
                 // Get all members of the selected chat.
                 $scope.chat.listRoomMembers(chatroom.roomid);
