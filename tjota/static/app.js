@@ -3,13 +3,6 @@
     remote.register(function (xhr) {
         xhr.setRequestHeader('X-CSRFToken', adjax.utils.cookie('csrftoken'));
     });
-
-    Date.prototype.yyyymmdd = function() {
-      var mm = this.getMonth() + 1; // getMonth() is zero-based
-      var dd = this.getDate();
-
-      return [this.getFullYear(), !mm[1] && '0', mm, !dd[1] && '0', dd].join(''); // padding
-    };
     
     var app = angular.module('app', []);
 
@@ -95,10 +88,11 @@
             // Check if the message received if from the currently selected room.
             if ($scope.chat.activeChatroom.roomid == resp.args[0]) {
                 // Get timestamp.
-                var ts = new Date(resp.args[1]);
+                var longdate = parseInt(resp.args[1]);
+                var currentdate = longdate ? new Date(longdate) : new Date();
                 
                 // Push message to messages array.
-                $scope.chat.messages.push({date: ts.yyyymmdd(),
+                $scope.chat.messages.push({date: currentdate,
                                             user: resp.args[3],
                                             content: resp.args[4]});
             }
@@ -302,13 +296,7 @@
             },
             
             /* IN PROGRESS */
-            leaveRoom: function (room) {
-                index = $scope.chat.chatrooms.indexOf(room);
-                firsthalf = $scope.chat.chatrooms.slice(0, index);
-                secondhalf = $scope.chat.chatrooms.slice(index + 1, $scope.chat.chatrooms.length);
-                
-                $scope.chat.chatrooms = firsthalf.concat(secondhalf);
-                
+            leaveRoom: function (room) {        
                 credentials = localStoreOps.getUsername() + "@" + localStoreOps.getProvider();
                 // roomid, userid, credentials, success, failure
                 backend.leaveRoom(
@@ -317,6 +305,23 @@
                     credentials,
                     function (response) {
                         console.log(response);
+                        
+                        index = $scope.chat.chatrooms.indexOf(room);
+                        firsthalf = $scope.chat.chatrooms.slice(0, index);
+                        secondhalf = $scope.chat.chatrooms.slice(index + 1, $scope.chat.chatrooms.length);
+                        
+                        $scope.chat.chatrooms = firsthalf.concat(secondhalf);
+                        
+                        if ($scope.chat.activeChatroom.roomid == room.roomid) {
+                            $scope.chat.messages = [];
+                            $scope.chat.messageLimit = 10;
+                            
+                            $scope.chat.activeChatroom = null;
+                            
+                            $scope.chat.chatroomMembers = [];
+                        }
+                        
+                        $scope.$apply();
                     },
                     function (err) {
                         console.log(err);
