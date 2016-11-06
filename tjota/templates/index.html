@@ -121,8 +121,8 @@
                                 <div ng-if="chat.data.chatType === 'direct' || chat.data.chatType === 'bot'">
                                       <label ng-if="chat.data.chatType === 'direct'">user@provider</label>
                                       <label ng-if="chat.data.chatType === 'bot'">provider://provider</label>
-                                      <input type="textfield" ng-if="chat.data.chatType === 'direct'" ng-model="chat.data.extraField"></input>
-                                      <input type="textfield" ng-if="chat.data.chatType === 'bot'" ng-model="chat.data.extraField"></input>
+                                      <input type="textfield" ng-if="chat.data.chatType === 'direct'" ng-model="chat.data.provider"></input>
+                                      <input type="textfield" ng-if="chat.data.chatType === 'bot'" ng-model="chat.data.provider"></input>
                                 </div>
                                 <button>Save room</button>
                             </form>
@@ -134,8 +134,7 @@
                     <div class="chats">
                         <ul class="chatlist">
                             <li class="chatitem" ng-repeat="chatroom in chat.chatrooms | orderBy: 'roomname'">
-                                <p ng-click="chat.selectChatroom(chatroom)">[[ chatroom.roomname ]]</p>
-                                <button ng-click="chat.leaveRoom(chatroom)">&times;</button>
+                                <p ng-click="chat.selectChatroom(chatroom)">[[ chatroom.roomname ]] <button ng-click="chat.leaveRoom(chatroom)">&times;</button></p>
                             </li>
                         </ul>
                     </div>
