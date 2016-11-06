@@ -19,7 +19,7 @@
 *********************************/  
 
   var Client = function() {
-    this.socket = new WebSocket('ws://' + location.host + '/backend');
+    this.socket = new WebSocket('ws://localhost:8080/');
     this.connected = false;
     this.socket.onopen = this.onopen.bind(this);
     this.socket.onmessage = this.onmessage.bind(this);
