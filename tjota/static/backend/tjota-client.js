@@ -59,7 +59,7 @@
       "room:self" : this.onRoomChange.bind(exports), // new room / removed
       "msg:recv" : this.onMessageReceived.bind(exports), // When the user gets a message
       "room:exit" : this.onRoomExit.bind(exports), // When someone leaves a room.
-      "status:recv" : this.onStatusRecevied.bind(exports), // status notifciations
+      "status:recv" : this.onStatusReceived.bind(exports), // status notifciations
     }; 
   }
 
@@ -83,8 +83,8 @@
     this.onRoomExit(resp);
   }
 
-  Client.prototype.onStatusRecevied = function (resp) {
-    this.onStatusRecevied(resp);
+  Client.prototype.onStatusReceived = function (resp) {
+    this.onStatusReceived(resp);
   }
 
   Client.prototype.onmessage = function (event) {
