@@ -20,15 +20,15 @@
         return remote.apps;
     });
     
-    
     /* Triggers when scrolled! Add limiters. */
     app.directive("directiveWhenScrolled", function() {
         return function(scope, element, attributes) {
             var raw = element[0];
             
             element.bind('scroll', function () {
-                console.log("its alive!");
-                scope.$apply(attributes.directiveWhenScrolled);
+                if (raw.scrollTop == 0) {
+                    scope.$apply(attributes.directiveWhenScrolled);
+                }
             })
         };
     });
@@ -186,36 +186,10 @@
         
         $scope.chat = {
             chatrooms: [],                  // All currently available chat rooms.
+            activeChatroom: null,
             
-            messageLimit: 10,               // Limit of messages shown in the current chat room.
-            loadMoreMessages: function () {
-                $scope.chat.messageLimit += 10;
-            },
-            
-            /* List of messages */
-            messages: [{date: 161102,       
-                        user: "Username", 
-                        content: "Hello"}, 
-                       {date: 161101,
-                        user: "Username",
-                        content: "Hi"},
-                       {date: 161031,
-                        user: "Username",
-                        content: "Bye"},
-                       {date:161030,
-                        user: "Username",
-                        content: "Goodbye"}],                   // Messages of the currently selected chat.
-            data: {
-                insertChat: false,          // Set to true when you want to create a chat.
-                chatName: null,             // Name of chat to be created.
-                chatType: false             // Type of chat to be created.
-            },
-           
-            messageContent: "",
-            sendMessage: function () {
-                console.log($scope.chat.messageContent);
-                
-                $scope.chat.messageContent = "";
+            selectChatroom: function (chatroom) {
+                $scope.chat.activeChatroom = chatroom;
             },
             
             /* Lists all chat rooms. */
@@ -232,12 +206,10 @@
                 );
             },
             
-            selectionSortRooms: function () {
+            /* List members by sending list:rooms with the room-ID! */
+            listMembers: function (roomID) {
                 
             },
-            
-            /* List members by sending list:rooms with the room-ID! */
-            
             
             /* Creates a chat room. */
             createRoom: function () {
@@ -265,6 +237,7 @@
                     $scope.chat.reset();
                 }
             },
+            
             /* IN PROGRESS */
             leaveRoom: function (room) {
                 index = $scope.chat.chatrooms.indexOf(room);
@@ -289,6 +262,41 @@
                 
                 //$scope.$apply();
             },
+            
+            messageLimit: 10,               // Limit of messages shown in the current chat room.
+            loadMoreMessages: function () {
+                $scope.chat.messageLimit += 10;
+            },
+            
+            /* List of messages */
+            messages: [{date: 161102,       
+                        user: "Username", 
+                        content: "Hello"}, 
+                       {date: 161101,
+                        user: "Username",
+                        content: "Hi"},
+                       {date: 161031,
+                        user: "Username",
+                        content: "Bye"},
+                       {date:161030,
+                        user: "Username",
+                        content: "Goodbye"}],                   // Messages of the currently selected chat.
+            
+            messageContent: "",
+            sendMessage: function () {
+                console.log($scope.chat.messageContent);
+                
+                $scope.chat.messageContent = "";
+            },
+            
+            data: {
+                insertChat: false,          // Set to true when you want to create a chat.
+                chatName: null,             // Name of chat to be created.
+                chatType: false             // Type of chat to be created.
+            },
+            
+            /* Bullshit UI function */
+            
             show: function () {
                 $scope.chat.data.insertChat = true;
                 $scope.chat.reset();

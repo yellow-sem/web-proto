@@ -89,8 +89,8 @@
         Here starts the user's view once logged in. The ng-if keeps this section hidden until the user variable
         is changed from null -> and actual user
         -->
-        <!--<div ng-if="user.name" class="userview">-->
-        <div class="userview">
+        <div ng-if="user.name" class="userview">
+        <!--<div class="userview">-->
             <div class="leftsidebar">
                 <h1>Welcome, [[ user.name ]]</h1>
                 <p>Provider: [[ user.provider ]]</p>
@@ -122,20 +122,25 @@
                     <div class="chats">
                         <ul class="chatlist">
                             <li class="chatitem" ng-repeat="chatroom in chat.chatrooms | orderBy: 'roomname'">
-                                [[ chatroom.roomname ]]<button ng-click="chat.leaveRoom(chatroom)">&times;</button>
+                                <p ng-click="chat.selectChatroom(chatroom)">[[ chatroom.roomname ]]</p>
+                                <button ng-click="chat.leaveRoom(chatroom)">&times;</button>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="chatview">
-                Message limit: [[ chat.messageLimit ]]
-                <div class="messages" directive-when-scrolled="chat.loadMoreMessages()">
-                    <ul>
-                        <li id="message" ng-repeat="message in chat.messages | limitTo: chat.messageLimit">
-                            <span>[[ message.date ]] - [[ message.user ]]: [[ message.content ]]</span>
-                        </li>
-                    </ul>
+                <div class="messageview">
+                    <div class="messages" directive-when-scrolled="chat.loadMoreMessages()">
+                        Message limit: [[ chat.messageLimit ]]
+                        <ul>
+                            <li id="message" ng-repeat="message in chat.messages | limitTo: chat.messageLimit">
+                                <span>[[ message.date ]] - [[ message.user ]]: [[ message.content ]]</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="members">
+                    </div>
                 </div>
                 <div class="sendmessage">
                     <input type="text" ng-model="chat.messageContent"/>
