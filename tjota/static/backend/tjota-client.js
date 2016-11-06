@@ -51,7 +51,7 @@
       "room:self" : this.onRoomChange.bind(exports), // new room / removed
       "msg:recv" : this.onMessageReceived.bind(exports), // When the user gets a message
       "room:exit" : this.onRoomExit.bind(exports), // When someone leaves a room.
-      "status:recv" : this.onStatusReceived.bind(exports), // status notifciations
+      "status:recv" : this.onStatusRecevied.bind(exports), // status notifciations
     }; 
   }
 
@@ -99,6 +99,10 @@
   }
 
   Client.prototype.formatRequest = function(Args) {
+    let NewArgs = [];
+    for (let i = 0; i<Args.length; i++) {
+      
+    }
     return Array.prototype.concat.apply([], Args).join(" ");
   }
 
