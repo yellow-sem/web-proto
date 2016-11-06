@@ -63,12 +63,11 @@
                 console.log(resp.args[3] + " joined.");  
                 $scope.$apply();
             } else if (change == '>>') { // left rooom
-                var arr = $scope.chat.chatroomMembers;
-                var index = Array.prototype.indexOf(resp.args[3]);
+                index = $scope.chat.chatroomMembers.indexOf(resp.args[3]);
                 console.log(resp.args[3] + " left.");  
                 if (index > -1) {
-                    $scope.chat.chatroomMembers = $scope.chat.chatroomMembers.splice(index, 1);
-                    $scope.apply();
+                    $scope.chat.chatroomMembers.splice(index, 1);
+                    $scope.$apply();
             }
 }
           
