@@ -12,7 +12,7 @@
       s4() + '-' + s4() + s4() + s4();
   }
 
-  function formatResponse() {
+  function formatResponse(resp) {
      var formatted = {
       "command":  "",
       "id": "",
