@@ -276,7 +276,7 @@
             },
             
             // List of all members of currently selected chatroom, see Var. activeChatroom.
-            chatroomMembers: [],
+            chatroomMembers: ["Adam", "Eve", "God", "The Snake", "Satan"],
             /* List members by sending list:rooms with the room-ID! */
             listMembers: function (roomID) {
                 // Send backend call and listen for members sent as response.
