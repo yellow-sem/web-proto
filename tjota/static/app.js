@@ -20,15 +20,16 @@
         return remote.apps;
     });
     
+    
+    /* Triggers when scrolled! Add limiters. */
     app.directive("directiveWhenScrolled", function() {
-        return function(scope, elm, attr) {
-            var raw = elm[0];
-
-            elm.bind('scroll', function() {
-                if (raw.scrollTop + raw.offsetHeight >= raw.scrollHeight) {
-                    scope.$apply(attr.directiveWhenScrolled);
-                }
-            });
+        return function(scope, element, attributes) {
+            var raw = element[0];
+            
+            element.bind('scroll', function () {
+                console.log("its alive!");
+                scope.$apply(attributes.directiveWhenScrolled);
+            })
         };
     });
 
@@ -42,6 +43,7 @@
             $scope.chat.chatrooms.push({roomid: resp.args[0],
                                        roomname: resp.args[1],
                                        roomtype: resp.args[2]});
+            console.log(resp);
             $scope.$apply();
         };
         
@@ -77,8 +79,6 @@
                 localStoreOps.removeSession();
                 localStoreOps.removeUsername();
                 localStoreOps.removeProvider();
-                
-                $scope.$apply();
             }
         };
 
@@ -146,7 +146,7 @@
                      session ID to be used for *this* session. The session should be saved in localstorage so it can be used to
                      easily log back in if the browser has not been closed. */
                     function (response) {       // Success
-			             console.log("Login response:" + response);
+                        console.log("Login response:" + response);
 
                         session = response.args[0];
 
@@ -220,7 +220,7 @@
             
             /* Lists all chat rooms. */
             listRooms: function () {
-                $scope.chat.chatrooms = [];
+                $scope.chat.chatrooms = []; 
                 /* Backend function takes: success_failure */
                 backend.listRooms(
                     function (response) {   // Success
@@ -231,6 +231,14 @@
                     }
                 );
             },
+            
+            selectionSortRooms: function () {
+                
+            },
+            
+            /* List members by sending list:rooms with the room-ID! */
+            
+            
             /* Creates a chat room. */
             createRoom: function () {
                 if ($scope.chat.data.chatName != null) {    // If input chat room name is null, don't create.
@@ -255,8 +263,6 @@
                     );
                     $scope.chat.hide();
                     $scope.chat.reset();
-                    
-                    $scope.$apply();
                 }
             },
             /* IN PROGRESS */
