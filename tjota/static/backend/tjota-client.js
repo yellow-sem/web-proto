@@ -143,6 +143,10 @@
     command("room:list", guid(), [], success, failure);
   }
 
+  function listRoomMembers (roomid, success, failure) {
+    command("room:list", guid(), [roomid], success, failure);
+  }
+
   function discoverRooms (success, failure) {
     command("room:discover", guid(), [], success, failure);
   }
