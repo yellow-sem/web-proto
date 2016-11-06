@@ -31,7 +31,6 @@
   }
 
   function escapeSingleQuote(str) {
-    console.log("escaping, " + str);
     return str.replace(/\'/g, "\'");
   }
 
@@ -56,7 +55,7 @@
 
     // Servers responses mapped to function
     this.responseRoutes = {     
-      "room:*": this.onRoomMemberChange.bind(exports), // Members in/out
+      "room:*" : this.onRoomMemberChange.bind(exports),
       "room:self" : this.onRoomChange.bind(exports), // new room / removed
       "msg:recv" : this.onMessageReceived.bind(exports), // When the user gets a message
       "room:exit" : this.onRoomExit.bind(exports), // When someone leaves a room.
@@ -81,7 +80,7 @@
   }
 
   Client.prototype.onRoomExit = function (resp) {
-    this.onRoomEixt(resp);
+    this.onRoomExit(resp);
   }
 
   Client.prototype.onStatusRecevied = function (resp) {
@@ -108,7 +107,7 @@
   }
 
   Client.prototype.formatRequest = function(Args) {
-    return escapeSingleQuote(Array.prototype.concat.apply([], Args).join(" "));
+    return escapeSingleQuote(Array.prototype.concat.apply([], Args).join(" ")) + "\n";
   }
 
   Client.prototype.send = function (Command, Id, Args) {
@@ -240,7 +239,6 @@
      EXPORTS
    **/
 
-
   exports.loginWithSession = loginWithSession;
   exports.loginWithCredential = loginWithCredential;
   exports.logoutFromSession = logoutFromSession;
@@ -278,8 +276,6 @@
     console.log(resp);    
   }
   
-
-
   // Exports to window.
   window.backend = exports;
   
