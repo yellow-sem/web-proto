@@ -12,6 +12,24 @@
       s4() + '-' + s4() + s4() + s4();
   }
 
+  function formatResponse() {
+     var formatted = {
+      "command":  "",
+      "id": "",
+      "args": []
+    };
+    // Regex for a response
+    var data = resp.match(/('(.+?)'|[A-Za-z0-9\w\:\-\*<<\@]+)/g);
+    formatted["command"] = data[0];
+    formatted["id"] = data[1];
+    var argsData = data.splice(2, data.length);
+    for (var key in argsData) {
+      // split on ' to ensure that escaped strings get joined to normal space seperated strings.
+      formatted["args"].push(argsData[key].split("'").join(""));
+    }
+    return formatted
+  }
+
 /********************************
 * Client API Object
 * This is the client to the server backend. 
@@ -32,25 +50,13 @@
       "room:*": this.onRoomMemberChange.bind(exports), // Members in/out
       "room:self" : this.onRoomChange.bind(exports), // new room / removed
       "msg:recv" : this.onMessageReceived.bind(exports), // When the user gets a message
+      "room:exit" : this.onRoomExit.bind(exports), // When someone leaves a room.
+      "status:recv" : this.onStatusReceived.bind(exports), // status notifciations
     }; 
   }
 
   Client.prototype.formatResponse = function (resp) {
-    var formatted = {
-      "command":  "",
-      "id": "",
-      "args": []
-    };
-    // Regex for a response
-    var data = resp.match(/('(.+?)'|[A-Za-z0-9\w\:\-\*<<\@]+)/g);
-    formatted["command"] = data[0];
-    formatted["id"] = data[1];
-    var argsData = data.splice(2, data.length);
-    for (var key in argsData) {
-      // split on ' to ensure that escaped strings get joined to normal space seperated strings.
-      formatted["args"].push(argsData[key].split("'").join(""));
-    }
-    return formatted
+    return formatResponse(resp);
   }
 
   Client.prototype.onRoomMemberChange = function (resp) {
@@ -63,6 +69,14 @@
 
   Client.prototype.onMessageReceived = function (message) {
     this.onMessageReceived(message);
+  }
+
+  Client.prototype.onRoomExit = function (resp) {
+    this.onRoomEixt(resp);
+  }
+
+  Client.prototype.onStatusRecevied = function (resp) {
+    this.onStatusRecevied(resp);
   }
 
   Client.prototype.onmessage = function (event) {
@@ -205,6 +219,14 @@
     command("msg:req", guid(), [], success, failure);
   }
 
+  function setStatus(string, success, failure) {
+    command("status:set", guid(), ["'" + string + "'"], success, failure);
+  }
+
+  function requestStatuses(success, failure) {
+    command("status:req", guid(), [], success, failure);
+  }
+
   /**
      EXPORTS
    **/
@@ -222,6 +244,14 @@
   exports.leaveRoom = leaveRoom;
   exports.requestMessages = requestMessages;
   exports.sendMessageTo = sendMessageTo;
+  exports.setStatus = setStatus;
+  exports.requestStatuses = requestStatuses;
+
+
+  exports.onRoomExit = function (resp) {
+    console.log("On Room exit");
+    console.log(resp);
+  }
   exports.onMessageReceived = function (resp) {
     console.log("On msg recv");
     console.log(resp);
@@ -234,6 +264,11 @@
     console.log("On room member change");
     console.log(resp);
   }
+  exports.onStatusReceived = function (resp) {
+    console.log("On status received");
+    console.log(resp);    
+  }
+  
 
 
   // Exports to window.
