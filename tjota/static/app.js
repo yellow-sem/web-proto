@@ -4,6 +4,13 @@
         xhr.setRequestHeader('X-CSRFToken', adjax.utils.cookie('csrftoken'));
     });
 
+    Date.prototype.yyyymmdd = function() {
+      var mm = this.getMonth() + 1; // getMonth() is zero-based
+      var dd = this.getDate();
+
+      return [this.getFullYear(), !mm[1] && '0', mm, !dd[1] && '0', dd].join(''); // padding
+    };
+    
     var app = angular.module('app', []);
 
     /* 
@@ -63,9 +70,12 @@
         backend.onMessageReceived = function (resp) {
             // Check if the message received if from the currently selected room.
             if ($scope.chat.activeChatroom.roomid == resp.args[0]) {
-                console.log(resp);
+                // Get timestamp.
+                var ts = new Date(resp.args[1]);
+                
                 // Push message to messages array.
-                $scope.chat.messages.push({user: resp.args[3],
+                $scope.chat.messages.push({date: ts.yyyymmdd(),
+                                            user: resp.args[3],
                                             content: resp.args[4]});
             }
             $scope.$apply();
