@@ -89,6 +89,7 @@ h1 {
         width: 30%;
         height: 100%;
         background: #37393C;
+        overflow: auto;
         color: white;
         padding: 0px 0px 0px 20px;
         
@@ -116,14 +117,17 @@ h1 {
                         padding: 2px;
                         color: white;
                         border-radius: 5px;
-
-                        > button {
-                            float: right;
-                            border-radius: 20%;
-                            font-weight: bold;
-                            background: #262626;
-                            color:#f5f5f5;
-                            border: 2px solid #f5f5f5;
+                        
+                        > p {
+                            
+                            > button {
+                                float: right;
+                                border-radius: 20%;
+                                font-weight: bold;
+                                background: #262626;
+                                color:#f5f5f5;
+                                border: 2px solid #f5f5f5;
+                            }
                         }
                     }
 

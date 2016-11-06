@@ -253,8 +253,11 @@
   exports.sendMessageTo = sendMessageTo;
   exports.setStatus = setStatus;
   exports.requestStatuses = requestStatuses;
+  exports.discoverRooms = discoverRooms;
 
-
+  exports.isConnected = function () {
+      return client.connected;
+  };
   exports.onRoomExit = function (resp) {
     console.log("On Room exit");
     console.log(resp);
