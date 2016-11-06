@@ -103,7 +103,11 @@
   }
 
   Client.prototype.onopen = function () {
+    if (exports.onOpen) {
+      exports.onOpen(true);
+    }
     this.connected = true;
+    
   }
 
   Client.prototype.formatRequest = function(Args) {
@@ -255,9 +259,14 @@
   exports.requestStatuses = requestStatuses;
   exports.discoverRooms = discoverRooms;
 
+  exports.onOpen = function (c) {
+    console.log("On open, callback " + c);
+  }
+
   exports.isConnected = function () {
       return client.connected;
   };
+
   exports.onRoomExit = function (resp) {
     console.log("On Room exit");
     console.log(resp);
