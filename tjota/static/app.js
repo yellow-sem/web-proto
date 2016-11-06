@@ -302,13 +302,7 @@
             },
             
             /* IN PROGRESS */
-            leaveRoom: function (room) {
-                index = $scope.chat.chatrooms.indexOf(room);
-                firsthalf = $scope.chat.chatrooms.slice(0, index);
-                secondhalf = $scope.chat.chatrooms.slice(index + 1, $scope.chat.chatrooms.length);
-                
-                $scope.chat.chatrooms = firsthalf.concat(secondhalf);
-                
+            leaveRoom: function (room) {        
                 credentials = localStoreOps.getUsername() + "@" + localStoreOps.getProvider();
                 // roomid, userid, credentials, success, failure
                 backend.leaveRoom(
@@ -317,6 +311,23 @@
                     credentials,
                     function (response) {
                         console.log(response);
+                        
+                        index = $scope.chat.chatrooms.indexOf(room);
+                        firsthalf = $scope.chat.chatrooms.slice(0, index);
+                        secondhalf = $scope.chat.chatrooms.slice(index + 1, $scope.chat.chatrooms.length);
+                        
+                        $scope.chat.chatrooms = firsthalf.concat(secondhalf);
+                        
+                        if ($scope.chat.activeChatroom.roomid == room.roomid) {
+                            $scope.chat.messages = [];
+                            $scope.chat.messageLimit = 10;
+                            
+                            $scope.chat.activeChatroom = null;
+                            
+                            $scope.chat.chatroomMembers = [];
+                        }
+                        
+                        $scope.$apply();
                     },
                     function (err) {
                         console.log(err);
