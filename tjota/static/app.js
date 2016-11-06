@@ -213,19 +213,23 @@
             
             /* Creates a chat room. */
             createRoom: function () {
-                if ($scope.chat.data.chatName != null) {    // If input chat room name is null, don't create.
-                    
-                    /* The chat room type needs to be checked when adding. */
-                    roomType = null;
-                    if ($scope.chat.data.chatType) {    // ChatType is a boolean bound to a checkbox.
-                        roomType = "public";
-                    } else {
-                        roomType = "private";
-                    }
-                    /* Backend function takes: name_type_success_failure */
+              data = $scope.chat.data;
+                if (data.chatName != null) {    // If input chat room name is null, don't create.                                     
+
+                  if (data.chatType === 'direct' || 'bot') {
+                    backend.createRoomWithDirectOrBot(data.chatName,
+                                                      data.chatType,
+                                                      data.extra,
+                                                      function (resp) {
+                                                        console.log(resp);
+                                                      },
+                                                      function (err) {
+                                                        console.log(err);
+                                                      });
+                  } else {
                     backend.createRoom(
-                        $scope.chat.data.chatName,
-                        roomType,
+                        data.chatName,
+                        data.chatType,
                         function (response) {   // Success
                             console.log(response);
                         },
@@ -233,8 +237,9 @@
                             console.log(err);
                         }
                     );
+                  }
                     $scope.chat.hide();
-                    $scope.chat.reset();
+                    $scope.chat.reset();                    
                 }
             },
             
@@ -290,9 +295,14 @@
             },
             
             data: {
+              chatTypes: [{name: "Public", id: "public"},
+                          {name: "Private", id: "private"},
+                          {name: "Direct", id: "direct"},
+                          {name: "Bot", id: "bot"}],
                 insertChat: false,          // Set to true when you want to create a chat.
                 chatName: null,             // Name of chat to be created.
-                chatType: false             // Type of chat to be created.
+                chatType: false,             // Type of chat to be created.
+              extraField: null
             },
             
             /* Bullshit UI function */
@@ -307,6 +317,7 @@
             },
             reset: function () {
                 $scope.chat.data.chatName = null;
+                $scope.chat.data.extraField = null;
                 $scope.chat.data.chatType = false;
             },
         };

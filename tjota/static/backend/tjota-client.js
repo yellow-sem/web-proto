@@ -155,6 +155,14 @@
             failure);
   }
 
+  function createRoomWithDirectOrBot (name, type, extra, success, failure) {
+    command("room:create",
+            guid(),
+            ["'" + name + "'", type, "'" + extra + "'"],
+            success,
+            failure);
+  }
+
   // [roomid] 
   function joinRoom (roomid, success, failure) {
     command("room:join",
@@ -202,6 +210,7 @@
   exports.loginWithCredential = loginWithCredential;
   exports.logoutFromSession = logoutFromSession;
   exports.createRoom = createRoom;
+  exports.createRoomWithDirectOrBot = createRoomWithDirectOrBot;
   exports.leaveRoom = leaveRoom;
   exports.joinRoom = joinRoom;
   exports.listRooms = listRooms;

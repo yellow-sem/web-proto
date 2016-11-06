@@ -108,10 +108,22 @@
                         <div ng-show="chat.data.insertChat">
                             
                             <form ng-submit="chat.createRoom()">
-                                <input type="text" ng-model="chat.data.chatName"/>
-                                <label>
-                                    <input type="checkbox" ng-model="chat.data.chatType"> Public
-                                </label>
+                              <div>
+                                <label> Room name </label>
+                                <input type="text" ng-model="chat.data.chatName"/>     
+                              </div>
+                                <div>
+                                  <label> Room Type </label>
+                                  <select ng-model="chat.data.chatType">
+                                    <option ng-repeat="option in chat.data.chatTypes" value="[[option.id]]">[[option.name]]</option>
+                                  </select>
+                                </div>
+                                <div ng-if="chat.data.chatType === 'direct' || chat.data.chatType === 'bot'">
+                                  <label ng-if="chat.data.chatType === 'direct'">user@provdider</label>
+                                  <label ng-if="chat.data.chatType === 'bot'">provder://provider</label>
+                                  <input type="textfield" ng-if="chat.data.chatType === 'direct'" ng-model="chat.data.extraField"></input>
+                                  <input type="textfield" ng-if="chat.data.chatType === 'bot'" ng-model="chat.data.extraField"></input>
+                                </div>
                                 <button>Save room</button>
                             </form>
                             
