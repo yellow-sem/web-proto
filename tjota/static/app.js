@@ -55,22 +55,22 @@
         };
         
         backend.onRoomMemberChange = function (resp) {
-          var change = resp.args[1]; // << or >> join or leave.
-          console.log("Room member change, ");
+            var change = resp.args[1]; // << or >> join or leave.
+            console.log("Room member change, ");
 
-          if (change == '<<') { // joined room
-            $scope.chat.chatroomMembers.push(resp.args[3]);            
-            console.log(resp.args[3] + " joined.");  
-            $scope.$apply();
-          } else if (change == '>>') { // left rooom
-            var arr = $scope.chat.chatroomMembers;
-            var index = Array.prototype.indexOf(resp.args[3]);
-            console.log(resp.args[3] + " left.");  
-            if (index > -1) {
-              $scope.chat.chatroomMembers = $scope.chat.chatroomMembers.splice(index, 1);
-              $scope.apply();
+            if (change == '<<') { // joined room
+                $scope.chat.chatroomMembers.push(resp.args[3]);            
+                console.log(resp.args[3] + " joined.");  
+                $scope.$apply();
+            } else if (change == '>>') { // left rooom
+                var arr = $scope.chat.chatroomMembers;
+                var index = Array.prototype.indexOf(resp.args[3]);
+                console.log(resp.args[3] + " left.");  
+                if (index > -1) {
+                    $scope.chat.chatroomMembers = $scope.chat.chatroomMembers.splice(index, 1);
+                    $scope.apply();
             }
-          }
+}
           
 
         }
