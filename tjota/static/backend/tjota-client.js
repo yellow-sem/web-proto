@@ -20,19 +20,23 @@ angular.module('client-api', [])
       "args": []
     };
     // Regex for a response
-    var data = resp.match(/('(.+?)'|[A-Za-z0-9\w\:\-\*<<>>\@]+)/g);
+    var data = resp.match(/('(.*\\\'|.*?)'|[A-Za-z0-9\w\:\-\*<<>>\@]+)/g);
     formatted["command"] = data[0];
     formatted["id"] = data[1];
     var argsData = data.splice(2, data.length);
     for (var key in argsData) {
+      var arg = argsData[key];
+      if (arg.charAt(0) === "'") {
+        arg = unescapeSingleQuote(arg.substring(1, arg.length - 1));
+      }
       // split on ' to ensure that escaped strings get joined to normal space seperated strings.
-      formatted["args"].push(argsData[key].split("'").join(""));
+      formatted["args"].push(arg);
     }
     return formatted
   }
 
   function escapeSingleQuote(str) {
-    return str.replace(/\'/g, "\'");
+    return str.replace(/'/g, "\\'");
   }
 
   function unescapeSingleQuote(str) {
@@ -104,11 +108,15 @@ angular.module('client-api', [])
   }
 
   Client.prototype.onopen = function () {
+    if (exports.onOpen) {
+      exports.onOpen(true);
+    }
     this.connected = true;
+    
   }
 
   Client.prototype.formatRequest = function(Args) {
-    return escapeSingleQuote(Array.prototype.concat.apply([], Args).join(" ")) + "\n";
+    return Array.prototype.concat.apply([], Args).join(" ") + "\n";
   }
 
   Client.prototype.send = function (Command, Id, Args) {
@@ -177,7 +185,7 @@ angular.module('client-api', [])
   function createRoom (name, type, success, failure) {
     command("room:create", 
             guid(),
-            ["'" + name + "'", type], 
+            ["'" + escapeSingleQuote(name) + "'", type], 
             success, 
             failure);
   }
@@ -185,7 +193,7 @@ angular.module('client-api', [])
   function createRoomWithDirectOrBot (name, type, extra, success, failure) {
     command("room:create",
             guid(),
-            ["'" + name + "'", type, "'" + extra + "'"],
+            ["'" + escapeSingleQuote(name) + "'", type, "'" + escapeSingleQuote(extra) + "'"],
             success,
             failure);
   }
@@ -219,7 +227,7 @@ angular.module('client-api', [])
   function sendMessageTo (to, message, success, failure) { 
     command("msg:send", 
             guid(),
-            [to, "'" + message + "'"], 
+            [to, "'" + escapeSingleQuote(message) + "'"], 
             success, 
             failure);
   }
@@ -229,7 +237,7 @@ angular.module('client-api', [])
   }
 
   function setStatus(string, success, failure) {
-    command("status:set", guid(), ["'" + string + "'"], success, failure);
+    command("status:set", guid(), ["'" + escapeSingleQuote(string) + "'"], success, failure);
   }
 
   function requestStatuses(success, failure) {
@@ -254,7 +262,15 @@ angular.module('client-api', [])
   exports.sendMessageTo = sendMessageTo;
   exports.setStatus = setStatus;
   exports.requestStatuses = requestStatuses;
+  exports.discoverRooms = discoverRooms;
 
+  exports.onOpen = function (c) {
+    console.log("On open, callback " + c);
+  }
+
+  exports.isConnected = function () {
+      return client.connected;
+  };
 
   exports.onRoomExit = function (resp) {
     console.log("On Room exit");

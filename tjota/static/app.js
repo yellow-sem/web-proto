@@ -3,13 +3,6 @@
     remote.register(function (xhr) {
         xhr.setRequestHeader('X-CSRFToken', adjax.utils.cookie('csrftoken'));
     });
-
-    Date.prototype.yyyymmdd = function() {
-      var mm = this.getMonth() + 1; // getMonth() is zero-based
-      var dd = this.getDate();
-
-      return [this.getFullYear(), !mm[1] && '0', mm, !dd[1] && '0', dd].join(''); // padding
-    };
     
     var app = angular.module('app', ['client-api']);
 
@@ -41,72 +34,86 @@
     });
 
     app.controller('main', function ($scope, apps, backend) {
-
         /* ########################################
-           REGISTER FUNCTIONS WITH BACKEND LIBRARY
+           REGISTERED FUNCTIONS WITH BACKEND LIBRARY
            ######################################## */
         
+        backend.onOpen = function (resp) {
+            if (resp) {
+                $scope.login.restoreSession();
+            }
+        }
+        
         backend.onRoomChange = function (resp) {
+            // If a new room was recently created, the incoming room is most likely the room that was created, join it! :-)
             if ($scope.chat.roomCreated) {
                 $scope.chat.activeChatroom = {
                     roomid: resp.args[0],
                     roomname: resp.args[1],
                     roomtype: resp.args[2]
                 };
+                // Room created? NO ROOM FOR YOU!
                 $scope.chat.roomCreated = false;
             }
-            $scope.chat.chatrooms.push({
-                roomid: resp.args[0],
-                roomname: resp.args[1],
-                roomtype: resp.args[2]
-            });
-            console.log(resp);
+            // Push the room to the list of chatrooms.
+            if ($scope.chat.chatrooms.filter(function (room) { return room.roomid == resp.args[0]; }).length == 0) {
+                $scope.chat.chatrooms.push({
+                    roomid: resp.args[0],
+                    roomname: resp.args[1],
+                    roomtype: resp.args[2]
+                });
+
+                console.log("New room: " + resp.args[1]);
+            }
+            
             $scope.$apply();
         };
         
         backend.onRoomMemberChange = function (resp) {
             var change = resp.args[1];          // << or >> join or leave.
             
-            if ($scope.chat.activeChatroom.roomid == resp.args[0]) {
-                if (change == '<<') {           // joined room
-                    $scope.chat.chatroomMembers.push(resp.args[3]);
-                    console.log(resp.args[3] + " joined.");
-                    $scope.$apply();
-                } else if (change == '>>') {    // left rooom
-                    index = $scope.chat.chatroomMembers.indexOf(resp.args[3]);
-                    console.log(resp.args[3] + " left.");
-                    if (index > -1) {
-                        $scope.chat.chatroomMembers.splice(index, 1);
+            if ($scope.chat.activeChatroom != null) {
+                if ($scope.chat.activeChatroom.roomid == resp.args[0]) {
+                    if (change == '<<') {           // joined room
+                        $scope.chat.chatroomMembers.push(resp.args[3]);
+
+                        console.log(resp.args[3] + " joined.");
+
                         $scope.$apply();
+                    } else if (change == '>>') {    // left rooom
+                        index = $scope.chat.chatroomMembers.indexOf(resp.args[3]);
+                        if (index > -1) {
+                            $scope.chat.chatroomMembers.splice(index, 1);
+                        }
+
+                        console.log(resp.args[3] + " left.");
+
+                        $scope.$apply();
+                    }
                 }
             }
         }
-          
-
-        }
         
-        // Resp = args[] with: 
-        // 0: Roomid
-        // 1: when?
-        // 2: userid
-        // 3: username@provider
-        // 4: messagecontent
         backend.onMessageReceived = function (resp) {
             // Check if the message received if from the currently selected room.
             if ($scope.chat.activeChatroom.roomid == resp.args[0]) {
-                // Get timestamp.
-                var ts = new Date(resp.args[1]);
+                // Parse long from message into integer, otherwise Javascript says NO.
+                var longdate = parseInt(resp.args[1]);
+                // Longdate will be = to NaN if the date of the message is 'now'. In that case, just get the current date by creating a 
+                // new Date object.
+                var msgdate = longdate ? new Date(longdate) : new Date();
                 
                 // Push message to messages array.
-                $scope.chat.messages.push({date: ts.yyyymmdd(),
+                $scope.chat.messages.push({date: msgdate,
                                             user: resp.args[3],
                                             content: resp.args[4]});
             }
+        
             $scope.$apply();
         };
         
         /* ########################################
-           REGISTER FUNCTIONS WITH BACKEND LIBRARY
+           REGISTERED FUNCTIONS WITH BACKEND LIBRARY
            ######################################## */
         
         $scope.user = {
@@ -126,21 +133,21 @@
                 backend.logoutFromSession(
                     currentSession, // The session ID needs to be provided upon logout to remove the session from the system.
                     function (response) {
-                        // Simply log the response.
-                        console.log(response);
+                        // Remove local variable bindings
+                        $scope.user.name = null;
+                        $scope.user.provider = null;
+
+                        // Remove LocalStorage variables, username, provider and session.
+                        localStoreOps.clear();
+                        
+                        console.log("Logged out successfully.")
+                        
+                        $scope.$apply();
                     },
                     function (err) {
-                        console.log(response);
+                        console.log("Could not log out");
                     }
                 );
-                // Remove local variable bindings
-                $scope.user.name = null;
-                $scope.user.provider = null;
-                
-                // Remove LocalStorage variables, username, provider and session.
-                localStoreOps.removeSession();
-                localStoreOps.removeUsername();
-                localStoreOps.removeProvider();
             }
         };
 
@@ -180,10 +187,25 @@
                     backend.loginWithSession(
                         loginInfo,
                         function (response) {   // Success
+                            backend.discoverRooms(
+                                function () {},
+                                function () {});
+                            
+                            $scope.chat.listRooms();
+                            
+                            // Assign user data through window.localStorage.
+                            $scope.user.name = localStoreOps.getUsername();
+                            $scope.user.provider = localStoreOps.getProvider();
+                            
                             console.log("Successfully restored session!");
+                            
+                            $scope.$apply();
                         },
                         function (err) {        // Failure
-                            console.log(err);
+                            // If the session could not be used to log in, remove the session from localStorage.
+                            localStoreOps.removeSession();
+                            
+                            console.log("Could not log in using stored session.");
                         }
                     );
                 }
@@ -208,17 +230,21 @@
                      session ID to be used for *this* session. The session should be saved in localstorage so it can be used to
                      easily log back in if the browser has not been closed. */
                     function (response) {       // Success
-                        console.log("Login response:" + response);
-
-                        session = response.args[0];
-
+                        backend.discoverRooms(
+                            function () {},
+                            function () {});
+                        
                         // If login was through an old saved sessionID
                         if (loginInfo.length == 1) { 
                             // Assign user data through window.localStorage.
                             $scope.user.name = localStoreOps.getUsername();
                             $scope.user.provider = localStoreOps.getProvider();
+                            
+                            console.log("Successfully restored session!");
                         // If login was through GUL credentials
                         } else {                
+                            session = response.args[0];
+                            
                             // Assign user data through what was provided.
                             userdata = loginInfo[0].split("@");
                             $scope.user.name = userdata[0];
@@ -228,15 +254,19 @@
                             localStoreOps.setSession(session);
                             localStoreOps.setUsername(userdata[0]);
                             localStoreOps.setProvider(userdata[1]);
+                            
+                            console.log("Successfully logged in using credentials.");
                         }
                         $scope.user.status = "Just logged in";  // Set status of user.
+                        
                         $scope.chat.listRooms();                // Get all chat rooms of user.  
 
                         $scope.login.hide();    // Hide login field.
+                        
                         $scope.$apply();        // Apply all changes.
                     },
                     function (err) {            // Failure
-                        console.log(err);
+                        console.log("Could not log in using credentials.");
                     }
                 );
             }
@@ -250,14 +280,15 @@
             chatrooms: [],                  // All currently available chat rooms.
             
             data: {
-                chatTypes: [{name: "Public", id: "public"},
-                          {name: "Private", id: "private"},
-                          {name: "Direct", id: "direct"},
-                          {name: "Bot", id: "bot"}],
-                insertChat: false,          // Set to true when you want to create a chat.
-                chatName: null,             // Name of chat to be created.
-                chatType: false,             // Type of chat to be created.
-                extraField: null
+                chatTypes: [
+                    {name: "Public", id: "public"},
+                    {name: "Private", id: "private"},
+                    {name: "Direct", id: "direct"},
+                    {name: "Bot", id: "bot"}],
+                insertChat: false,              // Set to true when you want to create a chat.
+                chatName: null,                 // Name of chat to be created.
+                chatType: false,                // Type of chat to be created.
+                provider: null
             },
             
             // For entering a new room once its created.
@@ -270,17 +301,19 @@
                     // A room has been created, 
                     $scope.chat.roomCreated = true;
                     
-                    if (data.chatType === 'direct' || 'bot') {
+                    if (data.chatType === 'direct' || 
+                        data.chatType === 'bot') {
                         backend.createRoomWithDirectOrBot(
                             data.chatName,
                             data.chatType,
-                            data.extraField,
+                            data.provider,
                             function (resp) {
-                                console.log(resp);
+                                console.log("Room created successfully.");
                             },
                             function (err) {
-                                console.log(err);
-                                $scope.chat.roomCreated = false;    // Error, listener for new rooms will  not trigger.
+                                console.log("Failed to create room.");
+                                
+                                $scope.chat.roomCreated = false;    // Error, listener for new rooms will not trigger.
                             }
                         );
                     } else {
@@ -288,11 +321,12 @@
                             data.chatName,
                             data.chatType,
                             function (response) {   // Success
-                                console.log(response);
+                                console.log("Room created successfully.");
                             },
                             function (err) {        // Failure
-                                console.log(err);
-                                $scope.chat.roomCreated = false;    // Error, listener for new rooms will  not trigger.
+                                console.log("Failed to create room.");
+                                
+                                $scope.chat.roomCreated = false;    // Error, listener for new rooms will not trigger.
                             }
                         );
                     }
@@ -301,14 +335,7 @@
                 }
             },
             
-            /* IN PROGRESS */
-            leaveRoom: function (room) {
-                index = $scope.chat.chatrooms.indexOf(room);
-                firsthalf = $scope.chat.chatrooms.slice(0, index);
-                secondhalf = $scope.chat.chatrooms.slice(index + 1, $scope.chat.chatrooms.length);
-                
-                $scope.chat.chatrooms = firsthalf.concat(secondhalf);
-                
+            leaveRoom: function (room) {        
                 credentials = localStoreOps.getUsername() + "@" + localStoreOps.getProvider();
                 // roomid, userid, credentials, success, failure
                 backend.leaveRoom(
@@ -316,10 +343,27 @@
                     localStoreOps.getSession(),
                     credentials,
                     function (response) {
-                        console.log(response);
+                        console.log("Left room successfully.");
+                        
+                        index = $scope.chat.chatrooms.indexOf(room);
+                        firsthalf = $scope.chat.chatrooms.slice(0, index);
+                        secondhalf = $scope.chat.chatrooms.slice(index + 1, $scope.chat.chatrooms.length);
+                        
+                        $scope.chat.chatrooms = firsthalf.concat(secondhalf);
+                        
+                        if ($scope.chat.activeChatroom.roomid == room.roomid) {
+                            $scope.chat.messages = [];
+                            $scope.chat.messageLimit = 10;
+                            
+                            $scope.chat.activeChatroom = null;
+                            
+                            $scope.chat.chatroomMembers = [];
+                        }
+                        
+                        $scope.$apply();
                     },
                     function (err) {
-                        console.log(err);
+                        console.log("Could not leave room due to error.");
                     }
                 );
                 
@@ -332,10 +376,10 @@
                 /* Backend function takes: success_failure */
                 backend.listRooms(
                     function (response) {   // Success
-                        console.log(response);
+                        console.log("Listing rooms...");
                     },
                     function (err) {        // Failure
-                        console.log(err);
+                        console.log("Error listing rooms.");
                     }
                 );
             },
@@ -399,9 +443,26 @@
             // Content of a message to send.
             messageContent: "",
             // Send message and reset the message content to nothing.
-            sendMessage: function () {
-                console.log($scope.chat.messageContent);
+            enterSendMessage: function ($event) {
+                if ($event.keyCode == 13) {
                 
+                    // sendMessageTo (roomid, messagecontent, success, failure)
+                    backend.sendMessageTo(
+                        $scope.chat.activeChatroom.roomid,
+                        $scope.chat.messageContent,
+                        function (response) {
+                            console.log(response);
+                        },
+                        function (err) {
+                            console.log(err);
+                        }
+                    );
+                    
+                    $scope.chat.messageContent = "";
+                }
+            },
+            
+            clickSendMessage: function () {
                 // sendMessageTo (roomid, messagecontent, success, failure)
                 backend.sendMessageTo(
                     $scope.chat.activeChatroom.roomid,
@@ -427,7 +488,7 @@
             },
             reset: function () {
                 $scope.chat.data.chatName = null;
-                $scope.chat.data.extraField = null;
+                $scope.chat.data.provider = null;
                 $scope.chat.data.chatType = false;
             },
         };
