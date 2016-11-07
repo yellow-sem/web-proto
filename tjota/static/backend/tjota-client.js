@@ -1,4 +1,5 @@
-(function () {
+angular.module('client-api', [])
+.factory('backend', function () {
   
   var exports = {};
 
@@ -275,9 +276,7 @@
     console.log("On status received");
     console.log(resp);    
   }
-  
-  // Exports to window.
-  window.backend = exports;
-  
-})();
+
+  return exports;
+});
 

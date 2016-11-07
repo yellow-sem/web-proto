@@ -11,7 +11,7 @@
       return [this.getFullYear(), !mm[1] && '0', mm, !dd[1] && '0', dd].join(''); // padding
     };
     
-    var app = angular.module('app', []);
+    var app = angular.module('app', ['client-api']);
 
     /* 
      * In order to use static references to pictures in index.html we had to change the ng-expressions
@@ -40,7 +40,7 @@
         };
     });
 
-    app.controller('main', function ($scope, apps) {
+    app.controller('main', function ($scope, apps, backend) {
 
         /* ########################################
            REGISTER FUNCTIONS WITH BACKEND LIBRARY
