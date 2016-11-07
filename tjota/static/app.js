@@ -302,7 +302,8 @@
                     // A room has been created, 
                     $scope.chat.roomCreated = true;
                     
-                    if (data.chatType === 'direct' || 'bot') {
+                    if (data.chatType === 'direct' || 
+                        data.chatType === 'bot') {
                         backend.createRoomWithDirectOrBot(
                             data.chatName,
                             data.chatType,

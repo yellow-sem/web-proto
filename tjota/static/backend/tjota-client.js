@@ -19,19 +19,23 @@
       "args": []
     };
     // Regex for a response
-    var data = resp.match(/('(.+?)'|[A-Za-z0-9\w\:\-\*<<>>\@]+)/g);
+    var data = resp.match(/('(.*)'|[A-Za-z0-9\w\:\-\*<<>>\@]+)/g);
     formatted["command"] = data[0];
     formatted["id"] = data[1];
     var argsData = data.splice(2, data.length);
     for (var key in argsData) {
+      var arg = argsData[key];
+      if (arg.charAt(0) === "'") {
+        arg = unescapeSingleQuote(arg.substring(1, arg.length - 1));
+      }
       // split on ' to ensure that escaped strings get joined to normal space seperated strings.
-      formatted["args"].push(argsData[key].split("'").join(""));
+      formatted["args"].push(arg);
     }
     return formatted
   }
 
   function escapeSingleQuote(str) {
-    return str.replace(/\'/g, "\\'");
+    return str.replace(/'/g, "\\'");
   }
 
   function unescapeSingleQuote(str) {
