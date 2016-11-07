@@ -108,8 +108,9 @@
                                             user: resp.args[3],
                                             content: resp.args[4]});
             }
-        
             $scope.$apply();
+            var messages = document.querySelector("#messages-container");
+            messages.scrollTop = messages.scrollHeight;
         };
         
         /* ########################################

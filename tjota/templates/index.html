@@ -145,7 +145,7 @@
             </div>
             <div class="chatview">
                 <div class="messageview">
-                    <div class="messages" directive-when-scrolled="chat.loadMoreMessages()">
+                    <div id="messages-container" class="messages" directive-when-scrolled="chat.loadMoreMessages()">
                         Message limit: [[ chat.messageLimit ]]
                         <ul>
                             <li id="msg" ng-repeat="message in chat.messages">
