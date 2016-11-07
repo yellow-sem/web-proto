@@ -4,7 +4,7 @@
         xhr.setRequestHeader('X-CSRFToken', adjax.utils.cookie('csrftoken'));
     });
     
-    var app = angular.module('app', []);
+    var app = angular.module('app', ['client-api']);
 
     /* 
      * In order to use static references to pictures in index.html we had to change the ng-expressions
@@ -33,8 +33,7 @@
         };
     });
 
-    app.controller('main', function ($scope, apps) {
-        
+    app.controller('main', function ($scope, apps, backend) {
         /* ########################################
            REGISTERED FUNCTIONS WITH BACKEND LIBRARY
            ######################################## */
