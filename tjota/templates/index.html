@@ -32,7 +32,7 @@
             -->
             <img src="{% static 'tjota.png' %}" alt="Tjöta"/>
             <img src="{% static 'yellow.png' %}" alt="Yellow"/>
-            <h3>You've heard of GUL, but have you heard of YELLOW?</h3>
+	    <h3>You've heard of GUL, but have you heard of <font color= "yellow">YELLOW?</font></h3>
         </div>
         
         <!-- Here starts the login box. -->
@@ -46,7 +46,7 @@
             <input type="password" ng-model="login.data.password" placeholder="Password"/>
             <label>
               <input type="checkbox" ng-model="login.consent"/>
-              I accept the <a href="#">Terms and Conditions</a>
+	       I accept the <a href="#">Terms and Conditions</a>
             </label>
             <!-- Button will remain disabled until consent is given. -->
             <button ng-disabled="!login.consent">Login</button>

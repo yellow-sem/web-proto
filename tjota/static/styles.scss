@@ -1,3 +1,4 @@
+
 * {
     &, &::after, &::before {
                 box-sizing: border-box;
@@ -9,6 +10,11 @@
 
 html, body {
     font-family: 'Open Sans';
+    background: url(lindholmen2.jpg) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 // Removing padding and margin to be able to customize this if needed.
@@ -37,7 +43,7 @@ h1 {
     }
     
     > .menuitem:hover {
-        background: lightgreen;
+        background: #31597B;
     }
     
     > .dummy80 {
@@ -66,13 +72,13 @@ h1 {
         }    
 
         > .dropdownitem:hover {
-            background: lightgreen;
+            background: #31597B;
         }
     }
 }
     
     .dropdown:hover {
-            background: lightgreen;    
+            background: #31597B;    
         
             > .dropdowncontent {
                 display: block;
@@ -214,6 +220,8 @@ h1 {
         > * {
             margin: 10px 0;
             padding: 10px;
+	    border: solid 1px gray; 
+	    background: white;
         }
 
         > input {
