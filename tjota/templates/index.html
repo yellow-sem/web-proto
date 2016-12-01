@@ -5,9 +5,9 @@
 <!DOCTYPE HTML>
 <html ng-app="app">
   <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Tjöta</title>
-
+    <title> Login </title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
     
@@ -34,62 +34,38 @@
             <img src="{% static 'yellow.png' %}" alt="Yellow"/>
 	    <h3>You've heard of GUL, but have you heard of <font color= "yellow">YELLOW?</font></h3>
         </div>
-        
-        <!-- Here starts the login box. -->
-        <div class="login" ng-show="login.visible">
-          <div class="caption">
-            <button ng-click="login.hide()">&times;</button>
-          </div>
-            <!-- The ng-submit takes the data gathered in the form and submits it with a call to the login funcion. -->
-          <form ng-submit="login.submit()">
-            <input type="text" ng-model="login.data.username" placeholder="Username"/>
-            <input type="password" ng-model="login.data.password" placeholder="Password"/>
-            <label>
-              <input type="checkbox" ng-model="login.consent"/>
-	       I accept the <a href="#">Terms and Conditions</a>
-            </label>
-            <!-- Button will remain disabled until consent is given. -->
-            <button ng-disabled="!login.consent">Login</button>
-          </form>
-        </div>
-        
-        <!-- Main navigation menu, displayed at the top of the screen, just below the logo images. -->
-        <div class="mainmenu">
-            <div ng-if="!user.name" ng-click="login.show()" class="menuitem">
-                Log in
-            </div>
-            <div ng-if="!user.name" class="dummy80">
-            </div>
-            <div ng-if="user.name" class="dropdown">
+<div ng-if="!user.name" class="login">
+ <div class="login-triangle"></div>
+<h2 class="login-header">Log in </h2>        
+  <form class="login-container" ng-submit="login.submit()">
+    <p><input type="username"ng-model="login.data.username" placeholder="Username@yellow" name="uname" required></p>
+    <p><input type="password" ng-model="login.data.password" placeholder="Password" name="psw" required></p>
+<br>	
+<p><input onchange="this.setCustomValidity(validity.valueMissing ? 'Please indicate that you accept the Terms and Conditions' : '');" id="field_terms" type="checkbox"  required name="terms"> <label for="field_terms" >I accept the <u>Terms and Conditions</u>
+</label></p>
+    <p><input type="submit" value="Log in"></p>
+  </form>
+</div>
+	
+ <!-- Main navigation menu, displayed at the top of the screen, just below the logo images. -->
+         <div class="mainmenu">
+            <div ng-if="user.name" class="dummy80">
+           <div ng-if="user.name" class="dropdown">
                 Account
                 <div class="dropdowncontent">
-                    <div class="dropdownitem">
-                        Profile
-                    </div>
                     <div ng-click="logout.submit()" class="dropdownitem">
                         Log out
                     </div>
                 </div>
+               </div>
             </div>
-            <div ng-if="user.name" class="menuitem">
-                Chats
-            </div>
-            <div ng-if="user.name" class="menuitem">
-                Calendar
-            </div>
-            <div ng-if="user.name" class="menuitem">
-                Grades
-            </div>
-            <div ng-if="user.name" class="menuitem">
-                Settings
-            </div>
-        </div>
-        
+          </div>
         <!-- 
         Here starts the user's view once logged in. The ng-if keeps this section hidden until the user variable
         is changed from null -> and actual user
         -->
-        <div ng-if="user.name" class="userview">
+       
+         <div ng-if="user.name" class="userview">     
         <!--<div class="userview">-->
             <div class="leftsidebar">
                 <h1>Welcome, [[ user.name ]]</h1>
@@ -167,13 +143,16 @@
                 </div>
             </div>
         </div>
-    </div>  
-    <script src="{% static 'angular.min.js' %}"></script>
+    </div>
+  
+  <script src="{% static 'angular.min.js' %}"></script>
     <script src="{% static 'angular-cookies.min.js' %}"></script>
     <script src="{% static 'angular-route.min.js' %}"></script>
 
     <script src="{% static 'backend/tjota-client.js' %}"></script>
     <script src="{% static 'localStorage/localStoreOps.js' %}"></script>
     <script src="{% static 'app.js' %}"></script>
-  </body>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+</body>
 </html>
+
