@@ -112,7 +112,7 @@
             var messages = document.querySelector("#messages-container");
             messages.scrollTop = messages.scrollHeight;
         };
-        
+
         /* ########################################
            REGISTERED FUNCTIONS WITH BACKEND LIBRARY
            ######################################## */
@@ -508,7 +508,7 @@
             },
             /* Sets editable back to false to hide input field. */
             save: function () {
-                backend.setStatus($scope.user.status,
+                backend.setStatus($scope.user.status || "",
                                   function (data) { // Success
 
                                   },
