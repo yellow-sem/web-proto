@@ -508,6 +508,13 @@
             },
             /* Sets editable back to false to hide input field. */
             save: function () {
+                backend.setStatus($scope.user.status,
+                                  function (data) { // Success
+
+                                  },
+                                  function (data) { // Failure
+
+                                  });
                 $scope.status.editable = false;
             },
         };
