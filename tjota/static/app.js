@@ -112,6 +112,19 @@
             var messages = document.querySelector("#messages-container");
             messages.scrollTop = messages.scrollHeight;
         };
+        
+        backend.onStatusReceived = function (resp) {
+            console.log(resp);
+            
+            user = resp.args[1].split("@");
+            username = user[0];
+            
+            if (username == $scope.user.name) {
+                $scope.user.status = resp.args[2];
+            }
+            
+            $scope.$apply();
+        }
 
         /* ########################################
            REGISTERED FUNCTIONS WITH BACKEND LIBRARY
@@ -200,6 +213,15 @@
                             
                             console.log("Successfully restored session!");
                             
+                            backend.requestStatuses(
+                                function (response) {
+                                        console.log("Success to retrieve status.");
+                                },
+                                function (err) {
+                                    console.log("Failed to retrieve status.");
+                                }
+                            );
+
                             $scope.$apply();
                         },
                         function (err) {        // Failure
@@ -258,11 +280,19 @@
                             
                             console.log("Successfully logged in using credentials.");
                         }
-                        $scope.user.status = "Just logged in";  // Set status of user.
                         
                         $scope.chat.listRooms();                // Get all chat rooms of user.  
 
-                        $scope.login.hide();    // Hide login field.
+                        $scope.login.hide();                    // Hide login field.
+                        
+                        backend.requestStatuses(
+                            function (response) {
+                                console.log("Success to retrieve status.");
+                            },
+                            function (err) {
+                                console.log("Failed to retrieve status.");
+                            }
+                        );
                         
                         $scope.$apply();        // Apply all changes.
                     },
@@ -408,7 +438,7 @@
                         console.log(err);
                     }
                 );
-                
+                                
                 // Empty current list of room members.
                 $scope.chat.chatroomMembers = [];
                 
@@ -510,10 +540,10 @@
             save: function () {
                 backend.setStatus($scope.user.status || "",
                                   function (data) { // Success
-
+                                        console.log("Successfully set status.")
                                   },
                                   function (data) { // Failure
-
+                                        console.log("Failed to set status.")
                                   });
                 $scope.status.editable = false;
             },
