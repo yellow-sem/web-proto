@@ -4,7 +4,7 @@
         xhr.setRequestHeader('X-CSRFToken', adjax.utils.cookie('csrftoken'));
     });
     
-    var app = angular.module('app', ['client-api']);
+    var app = angular.module('app', ['client-api', 'ngSanitize']);
 
     /* 
      * In order to use static references to pictures in index.html we had to change the ng-expressions
@@ -33,7 +33,7 @@
         };
     });
 
-    app.controller('main', function ($scope, apps, backend) {
+    app.controller('main', function ($scope, apps, backend, $sanitize) {
         /* ########################################
            REGISTERED FUNCTIONS WITH BACKEND LIBRARY
            ######################################## */
@@ -104,15 +104,31 @@
                 var msgdate = longdate ? new Date(longdate) : new Date();
                 
                 // Push message to messages array.
-                $scope.chat.messages.push({date: msgdate,
-                                            user: resp.args[3],
-                                            content: resp.args[4]});
+                var messageFormat = msgdate + " " + " " + resp.args[3] + ": " + resp.args[4];
+                $sanitize(messageFormat);
+                $scope.chat.messages.push(messageFormat);
+                //$scope.chat.messages.push({date: msgdate,
+                //                            user: resp.args[3],
+                //                            content: resp.args[4]});
             }
             $scope.$apply();
             var messages = document.querySelector("#messages-container");
             messages.scrollTop = messages.scrollHeight;
         };
         
+        backend.onStatusReceived = function (resp) {
+            console.log(resp);
+            
+            user = resp.args[1].split("@");
+            username = user[0];
+            
+            if (username == $scope.user.name) {
+                $scope.user.status = resp.args[2];
+            }
+            
+            $scope.$apply();
+        }
+
         /* ########################################
            REGISTERED FUNCTIONS WITH BACKEND LIBRARY
            ######################################## */
@@ -200,6 +216,15 @@
                             
                             console.log("Successfully restored session!");
                             
+                            backend.requestStatuses(
+                                function (response) {
+                                        console.log("Success to retrieve status.");
+                                },
+                                function (err) {
+                                    console.log("Failed to retrieve status.");
+                                }
+                            );
+
                             $scope.$apply();
                         },
                         function (err) {        // Failure
@@ -258,11 +283,19 @@
                             
                             console.log("Successfully logged in using credentials.");
                         }
-                        $scope.user.status = "Just logged in";  // Set status of user.
                         
                         $scope.chat.listRooms();                // Get all chat rooms of user.  
 
-                        $scope.login.hide();    // Hide login field.
+                        $scope.login.hide();                    // Hide login field.
+                        
+                        backend.requestStatuses(
+                            function (response) {
+                                console.log("Success to retrieve status.");
+                            },
+                            function (err) {
+                                console.log("Failed to retrieve status.");
+                            }
+                        );
                         
                         $scope.$apply();        // Apply all changes.
                     },
@@ -408,7 +441,7 @@
                         console.log(err);
                     }
                 );
-                
+                                
                 // Empty current list of room members.
                 $scope.chat.chatroomMembers = [];
                 
@@ -508,6 +541,13 @@
             },
             /* Sets editable back to false to hide input field. */
             save: function () {
+                backend.setStatus($scope.user.status || "",
+                                  function (data) { // Success
+                                        console.log("Successfully set status.")
+                                  },
+                                  function (data) { // Failure
+                                        console.log("Failed to set status.")
+                                  });
                 $scope.status.editable = false;
             },
         };

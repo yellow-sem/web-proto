@@ -1,3 +1,7 @@
+/*
+@author: Philip Crockett
+@date: 13/12/16
+*/
 angular.module('client-api', [])
 .factory('backend', function () {
   
@@ -52,8 +56,10 @@ angular.module('client-api', [])
   var Client = function() {
     this.socket = new WebSocket('ws://' + location.hostname + ':8080/');
     this.connected = false;
+    this.closed = false;
     this.socket.onopen = this.onopen.bind(this);
     this.socket.onmessage = this.onmessage.bind(this);
+    this.socket.onclose = this.onclose.bind(this);
 
     // Object with callbacks
     this.callbacks = {};
@@ -106,21 +112,36 @@ angular.module('client-api', [])
       }
     }
   }
-
+         
   Client.prototype.onopen = function () {
     if (exports.onOpen) {
       exports.onOpen(true);
     }
     this.connected = true;
-    
   }
 
+  Client.prototype.onclose = function () {
+    if (exports.onClose) {
+      exports.onClose(true);
+    }
+    this.closed = false;
+  }
+
+  Client.prototype.reconnect = function () {
+    this.socket = new WebSocket('ws://' + location.hostname + ':8080');
+    this.socket.onopen = this.onopen.bind(this);
+    this.socket.onmessage = this.onmessage.bind(this);
+    this.socket.onclose = this.onclose.bind(this);
+  }
+         
   Client.prototype.formatRequest = function(Args) {
     return Array.prototype.concat.apply([], Args).join(" ") + "\n";
   }
 
   Client.prototype.send = function (Command, Id, Args) {
-    console.log("Sending request: " + this.formatRequest([Command, Id, Args]));
+    if (this.closed) {
+      this.reconnect();
+    }
     this.socket.send(this.formatRequest([Command, Id, Args]));
   }
 

@@ -41,7 +41,7 @@
     <p><input type="username"ng-model="login.data.username" placeholder="Username@yellow" name="uname" required></p>
     <p><input type="password" ng-model="login.data.password" placeholder="Password" name="psw" required></p>
 <br>	
-<p><input onchange="this.setCustomValidity(validity.valueMissing ? 'Please indicate that you accept the Terms and Conditions' : '');" id="field_terms" type="checkbox"  required name="terms"> <label for="field_terms" >I accept the <u>Terms and Conditions</u>
+<p><input onchange="this.setCustomValidity(validity.valueMissing ? 'Please indicate that you accept the Terms and Conditions' : '');" id="field_terms" type="checkbox"  required name="terms"> <label for="field_terms" ><a href="terms/terms.html">I accept the Terms and Conditions</a>
 </label></p>
     <p><input type="submit" value="Log in"></p>
   </form>
@@ -125,7 +125,8 @@
                         Message limit: [[ chat.messageLimit ]]
                         <ul>
                             <li id="msg" ng-repeat="message in chat.messages">
-                                <p> [[ message.date | date:'yyyy-MM-dd HH:mm' ]] [[ message.user ]]: [[ message.content ]] </p>
+                              <p ng-bind-html="message"></p>
+                                <!--<p> [[ message.date | date:'yyyy-MM-dd HH:mm' ]] [[ message.user ]]: [[ message.content ]] </p>-->
                             </li>
                         </ul>
                     </div>
@@ -145,7 +146,8 @@
         </div>
     </div>
   
-  <script src="{% static 'angular.min.js' %}"></script>
+    <script src="{% static 'angular.min.js' %}"></script>
+    <script src="{% static 'angular-sanitize.min.js' %}"></scrip>
     <script src="{% static 'angular-cookies.min.js' %}"></script>
     <script src="{% static 'angular-route.min.js' %}"></script>
 
