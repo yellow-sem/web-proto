@@ -58,6 +58,9 @@ angular.module('client-api', [])
     this.connected = false;
     this.socket.onopen = this.onopen.bind(this);
     this.socket.onmessage = this.onmessage.bind(this);
+    this.socket.onclose = this.onclose.bind(this);
+
+    }
 
     // Object with callbacks
     this.callbacks = {};
@@ -110,21 +113,36 @@ angular.module('client-api', [])
       }
     }
   }
-
+         
   Client.prototype.onopen = function () {
     if (exports.onOpen) {
       exports.onOpen(true);
     }
     this.connected = true;
-    
   }
 
+  Client.prototype.onclose = function () {
+    if (exports.onOpen) {
+      exports.onOpen(false);
+    }
+    this.connected = false;
+  }
+
+  Client.prototype.reconnect = function () {
+    this.socket = new WebSocket('ws://' + location.hostname + ':8080');
+    this.socket.onopen = this.onopen.bind(this);
+    this.socket.onmessage = this.onmessage.bind(this);
+    this.socket.onclose = this.onclose.bind(this);
+  }
+         
   Client.prototype.formatRequest = function(Args) {
     return Array.prototype.concat.apply([], Args).join(" ") + "\n";
   }
 
   Client.prototype.send = function (Command, Id, Args) {
-    console.log("Sending request: " + this.formatRequest([Command, Id, Args]));
+    if (!this.connected) {
+      this.reconnect();
+    }
     this.socket.send(this.formatRequest([Command, Id, Args]));
   }
 
