@@ -4,7 +4,7 @@
         xhr.setRequestHeader('X-CSRFToken', adjax.utils.cookie('csrftoken'));
     });
     
-    var app = angular.module('app', ['client-api']);
+    var app = angular.module('app', ['client-api', 'ngSanitize']);
 
     /* 
      * In order to use static references to pictures in index.html we had to change the ng-expressions
@@ -33,7 +33,7 @@
         };
     });
 
-    app.controller('main', function ($scope, apps, backend) {
+    app.controller('main', function ($scope, apps, backend, $sanitize) {
         /* ########################################
            REGISTERED FUNCTIONS WITH BACKEND LIBRARY
            ######################################## */
@@ -104,9 +104,12 @@
                 var msgdate = longdate ? new Date(longdate) : new Date();
                 
                 // Push message to messages array.
-                $scope.chat.messages.push({date: msgdate,
-                                            user: resp.args[3],
-                                            content: resp.args[4]});
+                var messageFormat = msgdate + " " + " " + resp.args[3] + ": " + resp.args[4];
+                $sanitize(messageFormat);
+                $scope.chat.messages.push(messageFormat);
+                //$scope.chat.messages.push({date: msgdate,
+                //                            user: resp.args[3],
+                //                            content: resp.args[4]});
             }
             $scope.$apply();
             var messages = document.querySelector("#messages-container");

@@ -269,11 +269,11 @@ h1 {
     position: relative;
     Right: -22.5px
 }
-.login input[type="checkbox"]:required:invalid + label { 
+.login input[type="checkbox"]:required:invalid + label > a { 
 color: red;
 position: relative;
 Right: -31px; }
-.login input[type="checkbox"]:required:valid + label { color: green; 
+.login input[type="checkbox"]:required:valid + label > a { color: green; 
 position: relative;
 Right: -31px;}
 

@@ -56,11 +56,10 @@ angular.module('client-api', [])
   var Client = function() {
     this.socket = new WebSocket('ws://' + location.hostname + ':8080/');
     this.connected = false;
+    this.closed = false;
     this.socket.onopen = this.onopen.bind(this);
     this.socket.onmessage = this.onmessage.bind(this);
     this.socket.onclose = this.onclose.bind(this);
-
-    }
 
     // Object with callbacks
     this.callbacks = {};
@@ -122,10 +121,10 @@ angular.module('client-api', [])
   }
 
   Client.prototype.onclose = function () {
-    if (exports.onOpen) {
-      exports.onOpen(false);
+    if (exports.onClose) {
+      exports.onClose(true);
     }
-    this.connected = false;
+    this.closed = false;
   }
 
   Client.prototype.reconnect = function () {
@@ -140,7 +139,7 @@ angular.module('client-api', [])
   }
 
   Client.prototype.send = function (Command, Id, Args) {
-    if (!this.connected) {
+    if (this.closed) {
       this.reconnect();
     }
     this.socket.send(this.formatRequest([Command, Id, Args]));
